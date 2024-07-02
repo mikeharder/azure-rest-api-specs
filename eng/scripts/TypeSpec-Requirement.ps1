@@ -149,6 +149,8 @@ else {
       exit 1
     }
 
+    $pathToStableFolder = Join-Path $file ".." ".." "stable"
+
     $urlToStableFolder = "https://github.com/Azure/azure-rest-api-specs/tree/main/specification/$servicePath/stable"
 
     # Avoid conflict with pipeline secret

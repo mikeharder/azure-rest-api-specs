@@ -42,7 +42,7 @@ test.concurrent("No tspconfig.yaml", async ({ expect }) => {
   expect(exitCode).toBe(1);
 });
 
-test.concurrent("Generated from TypeSpec", async ({ expect }) => {
+test.concurrent("TypeSpec-generated", async ({ expect }) => {
   const { stdout, exitCode } = await checkAllUnder("specification/typespec-generated");
 
   expect(stdout).toContain("was generated from TypeSpec");
@@ -79,5 +79,16 @@ test.concurrent("Hand-written, unexpected response checking main", async ({ expe
 
   expect(stdout).toContain("was not generated from TypeSpec");
   expect(stderr).toContain("Unexpected response");
+  expect(exitCode).toBe(1);
+});
+
+test.concurrent("Hand-written after TypeSpec-generated", async ({ expect }) => {
+  const { stdout, stderr, exitCode } = await checkAllUnder(
+    "specification/hand-written-after-tsp",
+    '@{"https://github.com/Azure/azure-rest-api-specs/tree/main/specification/hand-written-after-tsp/resource-manager/Microsoft.TypeSpecGenerated/stable"=200}'
+  );
+
+  expect(stdout).toContain("was not generated from TypeSpec");
+  // expect(stderr).toMatchInlineSnapshot();
   expect(exitCode).toBe(1);
 });
