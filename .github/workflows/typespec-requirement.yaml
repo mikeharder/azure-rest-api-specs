@@ -36,6 +36,7 @@ jobs:
       - run: npm ls -a
         continue-on-error: true
 
+      # May set output 'spec-lifecycle-$(matrix.spec-type)' to 'brownfield'
       - run: |
           eng/scripts/TypeSpec-Requirement.ps1 `
             -BaseCommitish HEAD^ `
