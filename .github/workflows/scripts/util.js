@@ -26,6 +26,7 @@ async function addLabelIfNotExists(github, context, core, name) {
 
     if (await hasLabel(github, context, name)) {
       console.log(`Already has label '${name}'`);
+      return;
     }
 
     core.notice(`Adding label '${name}'`);
