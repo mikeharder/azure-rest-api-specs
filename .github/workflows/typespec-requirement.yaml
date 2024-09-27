@@ -81,4 +81,4 @@ jobs:
         with:
           script: |
             const util = require('./.github/workflows/scripts/util.js')
-            await util.removeLabelIfNotExists(github, context, core, "brownfield")
+            await util.removeLabelIfExists(github, context, core, "brownfield")
