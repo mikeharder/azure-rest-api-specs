@@ -1,22 +1,30 @@
 name: TypeSpec Requirement
 
-on: pull_request
+on: pull_request_target
 
 jobs:
-  TypeSpec-Requirement:
+  typespec-requirement:
     name: TypeSpec Requirement
     strategy:
       fail-fast: false
       matrix:
         spec-type: [data-plane, resource-manager]
 
+    permissions:
+      contents: read
+
     runs-on: ubuntu-latest
+
+    outputs:
+      spec-lifecycle-data-plane: ${{ steps.tsr-ps1.outputs.spec-lifecycle-data-plane }}
+      spec-lifecycle-resource-manager: ${{ steps.tsr-ps1.outputs.spec-lifecycle-resource-manager }}
 
     steps:
       - uses: actions/checkout@v4
         with:
           # Required since "HEAD^" is passed to TypeSpec-Requirement.ps1
           fetch-depth: 2
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
       - name: Use Node 20.0
         uses: actions/setup-node@v4
@@ -33,4 +41,43 @@ jobs:
             -BaseCommitish HEAD^ `
             -TargetCommitish HEAD `
             -SpecType ${{ matrix.spec-type }}
+        id: tsr-ps1
         shell: pwsh
+
+  edit-label:
+    name: Add/Remove Label "brownfield"
+
+    needs: typespec-requirement
+
+    if: ${{ success() }}
+
+    permissions:
+      pull-requests: write
+    
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github/workflows
+
+      - name: Add label "brownfield"
+        if: |
+          needs.typespec-requirement.outputs.spec-lifecycle-data-plane == 'brownfield' ||
+          needs.typespec-requirement.outputs.spec-lifecycle-resource-manager == 'brownfield'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const util = require('./.github/workflows/scripts/util.js')
+            await util.addLabelIfNotExists(github, context, core, "brownfield")
+
+      - name: Remove label "brownfield"
+        if: |
+          needs.typespec-requirement.outputs.spec-lifecycle-data-plane != 'brownfield' &&
+          needs.typespec-requirement.outputs.spec-lifecycle-resource-manager != 'brownfield'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const util = require('./.github/workflows/scripts/util.js')
+            await util.removeLabelIfNotExists(github, context, core, "brownfield")
