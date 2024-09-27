@@ -36,6 +36,7 @@ jobs:
       - run: npm ls -a
         continue-on-error: true
 
+      # May set output 'spec-lifecycle-$(matrix.spec-type)' to 'brownfield'
       - run: |
           eng/scripts/TypeSpec-Requirement.ps1 `
             -BaseCommitish HEAD^ `
@@ -80,4 +81,4 @@ jobs:
         with:
           script: |
             const util = require('./.github/workflows/scripts/util.js')
-            await util.removeLabelIfNotExists(github, context, core, "brownfield")
+            await util.removeLabelIfExists(github, context, core, "brownfield")
