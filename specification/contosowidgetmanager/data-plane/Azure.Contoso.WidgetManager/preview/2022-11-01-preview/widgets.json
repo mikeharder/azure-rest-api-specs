@@ -42,7 +42,7 @@
     "/widgets": {
       "get": {
         "operationId": "Widgets_ListWidgets",
-        "description": "List Widget resources 2",
+        "description": "List Widget resources",
         "parameters": [
           {
             "$ref": "#/parameters/Azure.Core.Foundations.ApiVersionParameter"
