@@ -28,7 +28,7 @@ jobs:
       - run: npm ls -a
         continue-on-error: true
 
-        # Sets output "spec-lifecycle"
+      # May set output "spec-lifecycle"
       - run: |
           eng/scripts/TypeSpec-Requirement.ps1 `
             -BaseCommitish HEAD^ `
