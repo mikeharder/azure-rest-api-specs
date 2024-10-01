@@ -28,7 +28,7 @@ jobs:
       - run: npm ls -a
         continue-on-error: true
 
-        # Sets output "spec-lifecycle"
+      # May set output "spec-lifecycle"
       - run: |
           eng/scripts/TypeSpec-Requirement.ps1 `
             -BaseCommitish HEAD^ `
@@ -46,7 +46,7 @@ jobs:
       - if: ${{ steps.tsr-ps1.outputs.spec-lifecycle }}
         uses: actions/upload-artifact@v4
         with:
-          name: spec-lifecycle-${{ matrix.spec-type }}--${{ steps.tsr-ps1.outputs.spec-lifecycle }}
+          name: spec-lifecycle-${{ matrix.spec-type }}-${{ steps.tsr-ps1.outputs.spec-lifecycle }}
           path: empty.txt
           if-no-files-found: error
           overwrite: true
