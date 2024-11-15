@@ -5,10 +5,6 @@ on: pull_request
 jobs:
   TypeSpec-Requirement:
     name: TypeSpec Requirement
-    strategy:
-      fail-fast: false
-      matrix:
-        spec-type: [data-plane, resource-manager]
 
     runs-on: ubuntu-latest
 
@@ -21,20 +17,17 @@ jobs:
     - name: Setup Node and run `npm ci`
       uses: ./.github/actions/setup-node-npm-ci
 
-    # Outputs
-    # - spec-lifecycle?: "brownfield"
     - run: |
         eng/scripts/TypeSpec-Requirement.ps1 `
           -BaseCommitish HEAD^ `
           -TargetCommitish HEAD `
-          -SpecType ${{ matrix.spec-type }}
       id: tsr-ps1
       shell: pwsh
 
-    - if: ${{ steps.tsr-ps1.outputs.spec-lifecycle }}
-      uses: ./.github/actions/upload-keyvalue-artifact
+    # Always add label artifact, even if "brownfield=false", to ensure label is removed when necessary
+    - uses: ./.github/actions/add-label-artifact
       name: Upload artifact with results
       with:
-        key: spec-lifecycle-${{ matrix.spec-type }}
-        value: ${{ steps.tsr-ps1.outputs.spec-lifecycle }}
+        name: "brownfield"
+        value: "${{ steps.tsr-ps1.outputs.brownfield == 'true' }}"
 

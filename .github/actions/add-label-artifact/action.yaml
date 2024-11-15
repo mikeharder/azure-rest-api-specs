@@ -1,20 +1,18 @@
-name: Upload KeyValue Artifact
-description: Uploads an empty artifact with the specified key and value encoded in the name
+name: Add Label Artifact
+description: Uploads an empty artifact named `label-${name}=${value}`, that's consumed by update-labels.yaml
 
 inputs:
-  key:
-    description: Key
+  name:
+    description: Name
     required: true
   value:
-    description: Value
+    description: Value ("true" or "false")
     required: true
 
 runs:
   using: composite
 
   steps:
-    # When possible, it's best to upload an empty file with all information in the artifact name, so consumers
-    # can query the information without needing to download files to disk.
     - name: Create empty file to upload artifact
       run: "> $RUNNER_TEMP/empty.txt"
       shell: bash
@@ -25,7 +23,7 @@ runs:
     # https://github.com/actions/toolkit/blob/main/packages/artifact/src/internal/upload/path-and-artifact-name-validation.ts
     - uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.key }}=${{ inputs.value }}
+        name: label-${{ inputs.name }}=${{ inputs.value }}
         path: ${{ runner.temp }}/empty.txt
         if-no-files-found: error
         overwrite: true
