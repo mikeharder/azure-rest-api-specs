@@ -4,6 +4,7 @@ export interface TsvHost {
   checkFileExists(file: string): Promise<boolean>;
   isDirectory(path: string): Promise<boolean>;
   gitOperation(folder: string): IGitOperation;
+  gitRoot(folder: string): Promise<string>;
   readTspConfig(folder: string): Promise<string>;
   runCmd(cmd: string, cwd?: string): Promise<[Error | null, string, string]>;
   normalizePath(folder: string): string;

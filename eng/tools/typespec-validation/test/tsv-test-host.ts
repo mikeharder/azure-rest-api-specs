@@ -34,6 +34,10 @@ export class TsvTestHost implements TsvHost {
     };
   }
 
+  async gitRoot(folder: string): Promise<string> {
+    return this.normalizePath(await this.gitOperation(folder).revparse("--show-toplevel"));
+  }
+
   async runCmd(cmd: string, cwd: string): Promise<[Error | null, string, string]> {
     let err = null;
     let stdout = `default ${cmd} at ${cwd}`;

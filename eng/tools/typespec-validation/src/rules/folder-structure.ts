@@ -11,7 +11,7 @@ export class FolderStructureRule implements Rule {
     let success = true;
     let stdOutput = "";
     let errorOutput = "";
-    const gitRoot = host.normalizePath(await host.gitOperation(folder).revparse("--show-toplevel"));
+    const gitRoot = await host.gitRoot(folder);
     const relativePath = path.relative(gitRoot, folder).split(path.sep).join("/");
 
     stdOutput += `folder: ${folder}\n`;

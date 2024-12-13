@@ -25,6 +25,10 @@ export class TsvRunnerHost implements TsvHost {
     return simpleGit(folder);
   }
 
+  async gitRoot(folder: string): Promise<string> {
+    return this.normalizePath(await this.gitOperation(folder).revparse("--show-toplevel"));
+  }
+
   readTspConfig(folder: string): Promise<string> {
     return readFile(join(folder, "tspconfig.yaml"), "utf-8");
   }
