@@ -1,0 +1,13 @@
+name: Swagger LintDiff
+
+# Simulate DevOps pipeline "Swagger LintDiff"
+on:
+  pull_request:
+
+jobs:
+  succeed:
+    name: Swagger LintDiff
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Success
+        run: echo "Success!"
