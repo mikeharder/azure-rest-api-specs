@@ -14,11 +14,31 @@ import { PER_PAGE_MAX } from "./github.js";
 export async function extractInputs(github, context, core) {
   core.info(`extractInputs(${context.eventName}, ${context.payload.action})`);
 
+  core.isDebug() && core.debug(JSON.stringify(context));
+
   /** @type {{ owner: string, repo: string, head_sha: string, issue_number: number, run_id: number }} */
   let inputs;
 
   // Add support for more event types as needed
   if (context.eventName === "pull_request") {
+    const payload =
+      /** @type {import("@octokit/webhooks-types").PullRequestEvent} */ (
+        context.payload
+      );
+
+    inputs = {
+      owner: payload.repository.owner.login,
+      repo: payload.repository.name,
+      head_sha: payload.pull_request.head.sha,
+      issue_number: payload.pull_request.number,
+      run_id: NaN,
+    };
+  } else if (
+    context.eventName === "pull_request_target" &&
+    // "pull_request_target" is particularly dangerous, so only support actions as needed
+    (context.payload.action === "labeled" ||
+      context.payload.action === "unlabeled")
+  ) {
     const payload =
       /** @type {import("@octokit/webhooks-types").PullRequestEvent} */ (
         context.payload
@@ -81,6 +101,9 @@ export async function extractInputs(github, context, core) {
 
     let issue_number;
 
+    // TODO: Add support for pull_request_target.  Should be exactly the same as pull_request.  pull_requests will be set for non-fork PRs,
+    // and empty for fork PRs.
+    // - TODO: Test in non-fork PR
     if (payload.workflow_run.event === "pull_request") {
       // Extract the issue number from the payload itself, or by passing the head_sha to an API
       // Do NOT attempt to extract the issue number from an artifact, since this could be modified
