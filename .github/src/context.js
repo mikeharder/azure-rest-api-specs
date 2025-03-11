@@ -14,11 +14,31 @@ import { PER_PAGE_MAX } from "./github.js";
 export async function extractInputs(github, context, core) {
   core.info(`extractInputs(${context.eventName}, ${context.payload.action})`);
 
+  core.isDebug() && core.debug(JSON.stringify(context));
+
   /** @type {{ owner: string, repo: string, head_sha: string, issue_number: number, run_id: number }} */
   let inputs;
 
   // Add support for more event types as needed
   if (context.eventName === "pull_request") {
+    const payload =
+      /** @type {import("@octokit/webhooks-types").PullRequestEvent} */ (
+        context.payload
+      );
+
+    inputs = {
+      owner: payload.repository.owner.login,
+      repo: payload.repository.name,
+      head_sha: payload.pull_request.head.sha,
+      issue_number: payload.pull_request.number,
+      run_id: NaN,
+    };
+  } else if (
+    context.eventName === "pull_request_target" &&
+    // "pull_request_target" is particularly dangerous, so only support actions as needed
+    (context.payload.action === "labeled" ||
+      context.payload.action === "unlabeled")
+  ) {
     const payload =
       /** @type {import("@octokit/webhooks-types").PullRequestEvent} */ (
         context.payload
@@ -81,10 +101,20 @@ export async function extractInputs(github, context, core) {
 
     let issue_number;
 
-    if (payload.workflow_run.event === "pull_request") {
-      // Extract the issue number from the payload itself, or by passing the head_sha to an API
-      // Do NOT attempt to extract the issue number from an artifact, since this could be modified
+    if (
+      payload.workflow_run.event === "pull_request" ||
+      payload.workflow_run.event == "pull_request_target"
+    ) {
+      // Other properties on payload.workflow_run should be the same for both pull_request and pull_request_target.
+
+      // Extract the issue number from the payload itself, or by passing the head_sha to an API.
+      //
+      // For pull_request, do NOT attempt to extract the issue number from an artifact, since this could be modified
       // in a fork PR.
+      //
+      // For pull_request_target, it might be safe to extract the issue number from an artifact, since the workflow runs
+      // on the target branch and can be trusted.  But it should also be unnecessary, since we should be able extract
+      // the issue number from the payload itself, just like pull_request.
 
       const pull_requests = payload.workflow_run.pull_requests;
       if (pull_requests && pull_requests.length > 0) {
@@ -116,6 +146,8 @@ export async function extractInputs(github, context, core) {
         if (pullRequests.length === 1) {
           issue_number = pullRequests[0].number;
         } else {
+          // TODO: Consider calling search API in target repo if we get an unexpected result from the head repo
+
           throw new Error(
             `Unexpected number of pull requests associated with commit '${head_sha}'. Expected: '1'. Actual: '${pullRequests.length}'.`,
           );
