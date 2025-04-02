@@ -1,7 +1,7 @@
 # containerstorage
 
 > see https://aka.ms/autorest
-This is the AutoRest configuration file for Contoso.
+This is the AutoRest configuration file for Contoso 2.
 
 ## Getting Started
 
@@ -43,7 +43,6 @@ These settings apply only when `--tag=package-2021-10-01-preview` is specified o
 ```yaml $(tag) == 'package-2021-10-01-preview'
 input-file:
   - Microsoft.Contoso/preview/2021-10-01-preview/contoso.json
-  - Microsoft.Contoso/preview/2021-10-01-preview/does-not-exist.json
 ```
 
 ---
