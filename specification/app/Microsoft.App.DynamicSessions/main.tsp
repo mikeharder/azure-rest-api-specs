@@ -8,6 +8,8 @@ using TypeSpec.Rest;
 using TypeSpec.Versioning;
 using Azure.Core;
 
+// test change
+
 @useAuth(AadOauth2Auth<["https://dynamicsessions.io/.default"]>)
 @service(#{ title: "Microsoft.App Dynamic Sessions service" })
 @server(
