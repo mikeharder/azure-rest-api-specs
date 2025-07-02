@@ -10,6 +10,8 @@ import "./indexes/routes.tsp";
 import "./deployments/routes.tsp";
 import "./red-teams/routes.tsp";
 
+// test change
+
 using TypeSpec.Http;
 using TypeSpec.Versioning;
 
