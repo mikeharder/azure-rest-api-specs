@@ -2,7 +2,8 @@
 
 import { readdir } from "fs/promises";
 import { resolve } from "path";
-import { flatMapAsync, mapAsync } from "./array.js";
+import { mapAsync } from "./array.js";
+import { flatMapAsync, toArray } from "./iterable.js";
 import { Readme } from "./readme.js";
 
 /**
@@ -183,11 +184,14 @@ export class SpecModel {
     return this.#readmes;
   }
 
+  /**
+   * @returns {Promise<Swagger[]>}
+   */
   async getSwaggers() {
-    const readmes = [...(await this.getReadmes()).values()];
-    const tags = await flatMapAsync(readmes, async (r) => [...(await r.getTags()).values()]);
-    const swaggers = tags.flatMap((t) => [...t.inputFiles.values()]);
-    return swaggers;
+    const readmes = (await this.getReadmes()).values();
+    const tags = flatMapAsync(readmes, async (r) => (await r.getTags()).values());
+    const swaggers = flatMapAsync(tags, (t) => t.inputFiles.values());
+    return await toArray(swaggers);
   }
 
   /**
