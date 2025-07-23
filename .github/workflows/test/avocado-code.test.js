@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 // Mock fs/promises before imports
 vi.mock("fs/promises", () => ({ readFile: vi.fn() }));
 
+// eslint-disable-next-line import/order
 import * as fs from "fs/promises";
 
 /** @type {import("vitest").Mock} */

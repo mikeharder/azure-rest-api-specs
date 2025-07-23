@@ -1,8 +1,8 @@
 // @ts-check
 
+import { resolve } from "path";
 import { describe, expect, it } from "vitest";
 
-import { resolve } from "path";
 import { Tag } from "../src/tag.js";
 
 describe("Tag", () => {

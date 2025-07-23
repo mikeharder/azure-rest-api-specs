@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 // @ts-check
+import fs from "fs";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { setSpecGenSdkStatusImpl } from "../src/spec-gen-sdk-status.js";
 import * as artifacts from "../src/artifacts.js";
 import * as github from "../src/github.js";
 import { createMockGithub, createMockCore } from "./mocks.js";
-import fs from "fs";
 
 describe("spec-gen-sdk-status", () => {
   let mockGithub;

@@ -8,5 +8,13 @@ import globals from "globals";
 export default [
   js.configs.recommended,
   importPlugin.flatConfigs.recommended,
-  { languageOptions: { ecmaVersion: "latest", globals: globals.node } },
+  {
+    languageOptions: {
+      ecmaVersion: "latest",
+      globals: globals.node,
+    },
+    rules: {
+      "import/order": "error",
+    },
+  },
 ];

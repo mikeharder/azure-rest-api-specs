@@ -1,5 +1,7 @@
 // @ts-check
 
+import { resolve } from "path";
+
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("simple-git", () => ({
@@ -8,7 +10,6 @@ vi.mock("simple-git", () => ({
   }),
 }));
 
-import { resolve } from "path";
 import * as simpleGit from "simple-git";
 import {
   dataPlane,

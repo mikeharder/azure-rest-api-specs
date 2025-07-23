@@ -1,10 +1,10 @@
 // @ts-check
 
 import { dirname, join, resolve } from "path";
+import { fileURLToPath } from "url";
 import { describe, expect, it } from "vitest";
 import { Swagger } from "../src/swagger.js";
 
-import { fileURLToPath } from "url";
 import { ConsoleLogger } from "../src/logger.js";
 import { Readme } from "../src/readme.js";
 import { SpecModel } from "../src/spec-model.js";

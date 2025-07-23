@@ -19,6 +19,9 @@
 */
 
 // #region imports/constants
+import fs from "fs/promises";
+import os from "os";
+import path from "path";
 import { extractInputs } from "../context.js";
 // eslint-disable-next-line no-unused-vars
 import { commentOrUpdate } from "../comment.js";
@@ -42,9 +45,6 @@ import {
   typeSpecRequirementDataPlaneTsg,
 } from "./tsgs.js";
 
-import fs from "fs/promises";
-import os from "os";
-import path from "path";
 
 /**
  * @typedef {Object} CheckMetadata

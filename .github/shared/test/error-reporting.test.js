@@ -1,8 +1,8 @@
 // @ts-check
 
+import fs from "fs/promises";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { setSummary, annotateFileError, setOutput } from "../src/error-reporting.js";
-import fs from "fs/promises";
 
 describe("ErrorReporting", () => {
   let logSpy;

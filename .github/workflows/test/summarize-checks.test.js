@@ -1,16 +1,15 @@
 import { describe, expect, it } from "vitest";
+// no-unresolved is not aware of exports definition in package.json
+// https://github.com/import-js/eslint-plugin-import/issues/1810
+//
+// eslint-disable-next-line import/no-unresolved
+import { Octokit } from "@octokit/rest";
 import {
   createNextStepsComment,
   summarizeChecksImpl,
   updateLabels,
 } from "../src/summarize-checks/summarize-checks.js";
 import { createMockCore } from "./mocks.js";
-
-// no-unresolved is not aware of exports definition in package.json
-// https://github.com/import-js/eslint-plugin-import/issues/1810
-//
-// eslint-disable-next-line import/no-unresolved
-import { Octokit } from "@octokit/rest";
 
 const mockCore = createMockCore();
 

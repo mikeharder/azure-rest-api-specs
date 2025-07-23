@@ -1,6 +1,5 @@
 import { relative, resolve } from "path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { repoRoot } from "../../shared/test/repo.js";
 
 vi.mock("simple-git", () => ({
   simpleGit: vi.fn().mockReturnValue({
@@ -16,6 +15,7 @@ import {
   swaggerHandWritten,
   swaggerTypeSpecGenerated,
 } from "../../shared/test/examples.js";
+import { repoRoot } from "../../shared/test/repo.js";
 import incrementalTypeSpec from "../src/arm-incremental-typespec.js";
 import { createMockCore } from "./mocks.js";
 

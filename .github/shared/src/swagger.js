@@ -1,8 +1,8 @@
 // @ts-check
 
-import $RefParser, { ResolverError } from "@apidevtools/json-schema-ref-parser";
 import { readFile } from "fs/promises";
 import { dirname, relative, resolve } from "path";
+import $RefParser, { ResolverError } from "@apidevtools/json-schema-ref-parser";
 import { mapAsync } from "./array.js";
 import { example } from "./changed-files.js";
 import { SpecModelError } from "./spec-model-error.js";

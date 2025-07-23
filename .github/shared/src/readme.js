@@ -1,9 +1,9 @@
 // @ts-check
 
 import { readFile } from "fs/promises";
+import { dirname, normalize, relative, resolve } from "path";
 import { FAILSAFE_SCHEMA, load } from "js-yaml";
 import { marked } from "marked";
-import { dirname, normalize, relative, resolve } from "path";
 import { mapAsync } from "./array.js";
 import { Tag } from "./tag.js";
 
