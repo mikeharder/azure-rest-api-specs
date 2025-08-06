@@ -521,7 +521,7 @@
         },
         "manufacturerId": {
           "type": "string",
-          "description": "The ID of the widget's manufacturer."
+          "description": "The ID of the widget's manufacturer 2."
         },
         "sharedModel": {
           "$ref": "#/definitions/FakedSharedModel",
@@ -539,7 +539,7 @@
       "properties": {
         "manufacturerId": {
           "type": "string",
-          "description": "The ID of the widget's manufacturer."
+          "description": "The ID of the widget's manufacturer 2."
         },
         "sharedModel": {
           "$ref": "#/definitions/FakedSharedModelCreateOrUpdate",
