@@ -473,7 +473,7 @@
         "age": {
           "type": "integer",
           "format": "int32",
-          "description": "Age of employee"
+          "description": "The employee age."
         },
         "city": {
           "type": "string",
