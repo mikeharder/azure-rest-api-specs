@@ -37,6 +37,7 @@ input-file:
 suppressions:
   - code: PathContainsResourceType
   - code: PathResourceProviderMatchNamespace
+  - code: Foo
 ```
 
 ### Tag: package-2021-10-01-preview
