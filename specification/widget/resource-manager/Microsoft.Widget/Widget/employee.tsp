@@ -1,10 +1,12 @@
 import "@typespec/rest";
 import "@typespec/http";
+import "@typespec/versioning";
 import "@azure-tools/typespec-azure-core";
 import "@azure-tools/typespec-azure-resource-manager";
 
 using TypeSpec.Rest;
 using TypeSpec.Http;
+using TypeSpec.Versioning;
 using Azure.Core;
 using Azure.ResourceManager;
 
@@ -19,6 +21,10 @@ model Employee is TrackedResource<EmployeeProperties> {
 model EmployeeProperties {
   /** Age of employee */
   age?: int32;
+
+  /** Age of employee */
+  @added(Versions.v2021_12_01)
+  age2: int32;
 
   /** City of employee */
   city?: string;
