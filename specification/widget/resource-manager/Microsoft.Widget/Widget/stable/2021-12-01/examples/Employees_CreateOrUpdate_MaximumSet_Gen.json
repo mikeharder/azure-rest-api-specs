@@ -9,6 +9,7 @@
     "resource": {
       "properties": {
         "age": 30,
+        "age2": 32,
         "city": "gydhnntudughbmxlkyzrskcdkotrxn",
         "profile": "ms"
       },
@@ -21,6 +22,7 @@
       "body": {
         "properties": {
           "age": 30,
+          "age2": 32,
           "city": "gydhnntudughbmxlkyzrskcdkotrxn",
           "profile": "ms",
           "provisioningState": "Succeeded"
@@ -47,6 +49,7 @@
       "body": {
         "properties": {
           "age": 30,
+          "age2": 32,
           "city": "gydhnntudughbmxlkyzrskcdkotrxn",
           "profile": "ms",
           "provisioningState": "Succeeded"

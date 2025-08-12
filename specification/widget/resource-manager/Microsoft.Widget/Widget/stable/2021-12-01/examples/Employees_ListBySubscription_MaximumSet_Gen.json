@@ -12,6 +12,7 @@
           {
             "properties": {
               "age": 30,
+              "age2": 32,
               "city": "gydhnntudughbmxlkyzrskcdkotrxn",
               "profile": "ms",
               "provisioningState": "Succeeded"

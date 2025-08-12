@@ -10,6 +10,7 @@
       "tags": {},
       "properties": {
         "age": 24,
+        "age2": 22,
         "city": "uyfg",
         "profile": "oapgijcswfkruiuuzbwco"
       }
@@ -20,6 +21,7 @@
       "body": {
         "properties": {
           "age": 30,
+          "age2": 32,
           "city": "gydhnntudughbmxlkyzrskcdkotrxn",
           "profile": "ms",
           "provisioningState": "Succeeded"
