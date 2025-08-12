@@ -735,10 +735,8 @@ export async function getCheckRunTuple(
 
     const latestCheck = sortedChecks[0];
 
-    // just handling both names for ease of integration testing
     if (
-      (latestCheck.name === "[TEST-IGNORE] Summarize PR Impact" ||
-        latestCheck.name === IMPACT_CHECK_NAME) &&
+      latestCheck.name === IMPACT_CHECK_NAME &&
       latestCheck.status === "completed" &&
       latestCheck.conclusion === "success"
     ) {
@@ -809,7 +807,7 @@ export async function getCheckRunTuple(
       );
     }
   } else {
-    requiredCheckNames = [IMPACT_CHECK_NAME, "[TEST-IGNORE] Summarize PR Impact"];
+    requiredCheckNames = [IMPACT_CHECK_NAME];
   }
 
   const filteredReqCheckRuns = unifiedCheckRuns.filter(
