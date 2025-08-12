@@ -17,9 +17,6 @@ jobs:
           # Required since "HEAD^" is passed to TypeSpec-Requirement.ps1
           fetch-depth: 2
 
-      - name: Setup Node and install deps
-        uses: ./.github/actions/setup-node-install-deps
-
       - run: |
           eng/scripts/TypeSpec-Requirement.ps1 `
             -BaseCommitish HEAD^ `
