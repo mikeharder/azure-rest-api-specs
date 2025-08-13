@@ -296,8 +296,6 @@ export default async function summarizeChecks({ github, context, core }) {
     return;
   }
 
-  // TODO: This is triggered by pull_request_target AND workflow_run.  If workflow_run, targetBranch will be undefined.
-  //       Is this OK? If not, we should be able to get the base ref by calling a GH API to fetch the PR metadata.
   const targetBranch = context.payload.pull_request?.base?.ref;
   core.info(`PR target branch: ${targetBranch}`);
 
@@ -521,9 +519,6 @@ export async function updateCommitStatus(github, core, owner, repo, head_sha, ch
  * @param {string} owner
  * @param {string} repo
  * @param {number} issue_number
- * @param {*} owner
- * @param {*} repo
- * @param {*} issue_number
  * @return {Promise<string[]>}
  */
 export async function getExistingLabels(github, owner, repo, issue_number) {
@@ -735,10 +730,8 @@ export async function getCheckRunTuple(
 
     const latestCheck = sortedChecks[0];
 
-    // just handling both names for ease of integration testing
     if (
-      (latestCheck.name === "[TEST-IGNORE] Summarize PR Impact" ||
-        latestCheck.name === IMPACT_CHECK_NAME) &&
+      latestCheck.name === IMPACT_CHECK_NAME &&
       latestCheck.status === "completed" &&
       latestCheck.conclusion === "success"
     ) {
@@ -809,7 +802,7 @@ export async function getCheckRunTuple(
       );
     }
   } else {
-    requiredCheckNames = [IMPACT_CHECK_NAME, "[TEST-IGNORE] Summarize PR Impact"];
+    requiredCheckNames = [IMPACT_CHECK_NAME];
   }
 
   const filteredReqCheckRuns = unifiedCheckRuns.filter(
