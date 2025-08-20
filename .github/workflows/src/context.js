@@ -17,7 +17,7 @@ import { getIssueNumber } from "./issues.js";
  * @param {import('@actions/github-script').AsyncFunctionArguments['github']} github
  * @param {import('@actions/github-script').AsyncFunctionArguments['context']} context
  * @param {import('@actions/github-script').AsyncFunctionArguments['core']} core
- * @returns {Promise<{owner: string, repo: string, head_sha: string, issue_number: number, run_id: number, details_url?: string }>}
+ * @returns {Promise<{owner: string, repo: string, head_sha: string, merge_sha?: string, issue_number: number, run_id: number, details_url?: string }>}
  */
 export async function extractInputs(github, context, core) {
   core.info("extractInputs()");
@@ -33,7 +33,7 @@ export async function extractInputs(github, context, core) {
 
   github.hook.after("request", rateLimitHook);
 
-  /** @type {{ owner: string, repo: string, head_sha: string, issue_number: number, run_id: number, details_url?: string }} */
+  /** @type {{ owner: string, repo: string, head_sha: string, merge_sha?: string, issue_number: number, run_id: number, details_url?: string }} */
   let inputs;
 
   // Add support for more event types as needed
@@ -103,6 +103,9 @@ export async function extractInputs(github, context, core) {
 
     let issue_number = NaN;
     let head_sha = "";
+
+    /** @type {string|undefined} */
+    let merge_sha;
 
     if (
       payload.workflow_run.event === "pull_request" ||
@@ -177,7 +180,9 @@ export async function extractInputs(github, context, core) {
             pull_number: issue_number,
           });
 
-          if (pr.data.head.sha !== head_sha) {
+          if (pr.data.head.sha === head_sha) {
+            merge_sha = pr.data.merge_commit_sha || undefined;
+          } else {
             // TODO: Consider throwing instead of warning.  May need to handle `issue-number=null|undefined`,
             // but invalid integers should throw.
             core.info(
@@ -323,6 +328,7 @@ export async function extractInputs(github, context, core) {
       owner: payload.workflow_run.repository.owner.login,
       repo: payload.workflow_run.repository.name,
       head_sha,
+      merge_sha,
       issue_number,
       run_id: payload.workflow_run.id,
     };

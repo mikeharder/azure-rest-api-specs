@@ -25,7 +25,11 @@ export default async function setStatus(
   requiredStatusName,
   overridingLabel,
 ) {
-  const { owner, repo, head_sha, issue_number } = await extractInputs(github, context, core);
+  const { owner, repo, head_sha, merge_sha, issue_number } = await extractInputs(
+    github,
+    context,
+    core,
+  );
 
   // Default target is this run itself
   let target_url =
@@ -36,6 +40,7 @@ export default async function setStatus(
     owner,
     repo,
     head_sha,
+    merge_sha,
     issue_number,
     target_url,
     github,
@@ -52,6 +57,7 @@ export default async function setStatus(
  * @param {string} params.owner
  * @param {string} params.repo
  * @param {string} params.head_sha
+ * @param {string} params.merge_sha
  * @param {number} params.issue_number
  * @param {string} params.target_url
  * @param {(import("@octokit/core").Octokit & import("@octokit/plugin-rest-endpoint-methods/dist-types/types.js").Api & { paginate: import("@octokit/plugin-paginate-rest").PaginateInterface; })} params.github
@@ -65,6 +71,7 @@ export async function setStatusImpl({
   owner,
   repo,
   head_sha,
+  merge_sha,
   issue_number,
   target_url,
   github,
@@ -77,6 +84,11 @@ export async function setStatusImpl({
     throw new Error(`head_sha is not a valid full git SHA: '${head_sha}'`);
   }
   core.setOutput("head_sha", head_sha);
+
+  if (!isFullGitSha(merge_sha)) {
+    throw new Error(`merge_sha is not a valid full git SHA: '${merge_sha}'`);
+  }
+  core.setOutput("merge_sha", merge_sha);
 
   if (!Number.isInteger(issue_number) || issue_number <= 0) {
     throw new Error(`issue_number must be a positive integer: ${issue_number}`);
@@ -115,7 +127,7 @@ export async function setStatusImpl({
     await github.rest.repos.createCommitStatus({
       owner,
       repo,
-      sha: head_sha,
+      sha: merge_sha,
       state,
       context: requiredStatusName,
       description,
@@ -219,7 +231,7 @@ export async function setStatusImpl({
     await github.rest.repos.createCommitStatus({
       owner,
       repo,
-      sha: head_sha,
+      sha: merge_sha,
       state,
       context: requiredStatusName,
       target_url,
@@ -233,7 +245,7 @@ export async function setStatusImpl({
     await github.rest.repos.createCommitStatus({
       owner,
       repo,
-      sha: head_sha,
+      sha: merge_sha,
       state: CommitStatusState.PENDING,
       context: requiredStatusName,
       target_url,
