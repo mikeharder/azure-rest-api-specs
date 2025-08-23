@@ -2,11 +2,12 @@
 
 /**
  * @typedef {Object} DurationType
- * @property {number} Second - 1 second in milliseconds
- * @property {number} Minute - 1 minute in milliseconds
- * @property {number} Hour   - 1 hour in milliseconds
- * @property {number} Day    - 1 day in milliseconds
- * @property {number} Week   - 1 week in milliseconds
+ * @property {number} Millisecond - 1 millisecond
+ * @property {number} Second -      1 second in milliseconds
+ * @property {number} Minute -      1 minute in milliseconds
+ * @property {number} Hour   -      1 hour in milliseconds
+ * @property {number} Day    -      1 day in milliseconds
+ * @property {number} Week   -      1 week in milliseconds
  */
 
 /**
@@ -16,6 +17,7 @@
  * @type {DurationType}
  */
 export const Duration = Object.freeze({
+  Millisecond: 1,
   Second: 1000,
   Minute: 60 * 1000,
   Hour: 60 * 60 * 1000,
@@ -34,16 +36,13 @@ export function add(date, ms) {
 }
 
 /**
- * Format the duration between two dates as hh:mm:ss
- * (always zero-padded).
+ * Formats a duration of milliseconds as hh:mm:ss (always zero-padded).
  *
- * @param {Date} from
- * @param {Date} to
+ * @param {number} ms
  * @returns {string}
  */
-export function formatDuration(from, to) {
-  let diffMs = to.getTime() - from.getTime();
-  let totalSeconds = Math.floor(diffMs / Duration.Second);
+export function formatDuration(ms) {
+  let totalSeconds = Math.floor(ms / Duration.Second);
 
   const hours = Math.floor(totalSeconds / 3600);
   totalSeconds %= 3600;
@@ -54,6 +53,17 @@ export function formatDuration(from, to) {
   const pad = (/** @type {number} */ n) => String(n).padStart(2, "0");
 
   return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+
+/**
+ * Returns the number of milliseconds between two dates (always non-negative)
+ *
+ * @param {Date} from
+ * @param {Date} to
+ * @returns {number}
+ */
+export function getDuration(from, to) {
+  return Math.abs(from.getTime() - to.getTime());
 }
 
 /**
