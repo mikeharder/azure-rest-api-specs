@@ -1,0 +1,63 @@
+name: avocado - Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: ref to test (eg refs/pull/1/merge)
+        required: true
+        default: main
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: specs
+          sparse-checkout: |
+            .github
+            specification/common-types
+            specification/widget
+
+      - name: Checkout avocado@${{ inputs.ref }}
+        uses: actions/checkout@v4
+        with:
+          repository: Azure/avocado
+          ref: ${{ inputs.ref }}
+          path: avocado
+
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build avocado
+        run: |
+          npm ci
+          npm run tsc
+        working-directory: avocado
+
+      - name: Run avocado
+        run: |
+          node bin/cli.js \
+            --excludePaths \
+              "/common-types/" \
+              "/scenarios/" \
+              "/package.json" \
+              "/package-lock.json" \
+              "/cadl/examples/" \
+              '(?=/examples/)(?!(?:/stable/|/preview/))' \
+              "/\\.github/" \
+              "/eng/" \
+            --includePaths \
+              "data-plane" \
+              "resource-manager" \
+            -d "../specs/specification/widget"
+        working-directory: avocado
