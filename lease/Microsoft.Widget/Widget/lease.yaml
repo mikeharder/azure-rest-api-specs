@@ -1,0 +1,8 @@
+- # ISO 8601 date (YYYY-MM-DD)
+  start: "2025-10-01"
+
+  # ISO 8601 duration ("P90D" = 90 days)
+  duration: "P90D"
+
+  # GitHub handles (quoted for '@')
+  reviewers: ["@mikeharder"]
