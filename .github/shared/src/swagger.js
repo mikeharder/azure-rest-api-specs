@@ -1,4 +1,5 @@
 import $RefParser from "@apidevtools/json-schema-ref-parser";
+import SwaggerParser from "@apidevtools/swagger-parser";
 import { readFile } from "fs/promises";
 import { dirname, relative, resolve } from "path";
 import { inspect } from "util";
@@ -239,8 +240,36 @@ export class Swagger {
   /**
    * @returns {Promise<Map<string, Operation>>} Map of the operations in this swagger, using `operationId` as key
    */
+  // async getOperations() {
+  //   return (await this.#getData()).operations;
+  // }
+
+  /**
+   * @returns {Promise<Map<string, Operation>>} Map of the operations in this swagger, using `operationId` as key
+   */
   async getOperations() {
-    return (await this.#getData()).operations;
+    /** @type {Map<string, Operation>} */
+    const operations = new Map();
+
+    const api = /** @type {import("openapi-types").OpenAPIV2.Document<{}>} */ (
+      await SwaggerParser.validate(this.#path, { validate: { spec: true } })
+    );
+
+    for (const [path, pathObject] of Object.entries(api.paths)) {
+      for (const [method, operation] of Object.entries(pathObject)) {
+        const operationObj = /** @type {OperationObject} */ (operation);
+        if (method !== "parameters" && operationObj.operationId !== undefined) {
+          const op = {
+            id: operationObj.operationId,
+            httpMethod: method.toUpperCase(),
+            path,
+          };
+          operations.set(op.id, op);
+        }
+      }
+    }
+
+    return operations;
   }
 
   /**
