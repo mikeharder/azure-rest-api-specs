@@ -46,6 +46,7 @@ describe("Swagger", () => {
   it("can be created with sample string content", async () => {
     const content = `
     {
+      "swagger": "2.0",
       "paths": {
         "/foo": {
           "parameters": ["unknown", 0],
