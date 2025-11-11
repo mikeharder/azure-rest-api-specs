@@ -149,31 +149,37 @@ export class Swagger {
           "Failed to read file for swagger",
         ));
 
-      /** @type {Map<string, Operation>} */
-      const operations = new Map();
-
       const swaggerJson = await this.#wrapError(
         () => /** @type {unknown} */ (JSON.parse(content)),
         "Failed to parse JSON for swagger",
       );
 
-      /** @type {SwaggerObject} */
-      const swagger = await this.#wrapError(
-        () => swaggerSchema.parse(swaggerJson),
+      /** @type {Map<string, Operation>} */
+      const operations = new Map();
+
+      const api = await this.#wrapError(
+        async () =>
+          /** @type {import("openapi-types").OpenAPIV2.Document<{}>} */ (
+            await SwaggerParser.validate(
+              /*path,*/
+              /** @type {import("openapi-types").OpenAPI.Document<{}>} */ (swaggerJson),
+              { validate: { spec: true } },
+            )
+          ),
         "Failed to parse schema for swagger",
       );
 
-      // Process regular paths
-      if (swagger.paths) {
-        for (const [path, pathObject] of Object.entries(swagger.paths)) {
-          this.#addOperations(operations, path, pathObject);
-        }
-      }
-
-      // Process x-ms-paths (Azure extension)
-      if (swagger["x-ms-paths"]) {
-        for (const [path, pathObject] of Object.entries(swagger["x-ms-paths"])) {
-          this.#addOperations(operations, path, pathObject);
+      for (const [path, pathObject] of Object.entries(api.paths)) {
+        for (const [method, operation] of Object.entries(pathObject)) {
+          const operationObj = /** @type {OperationObject} */ (operation);
+          if (method !== "parameters" && operationObj.operationId !== undefined) {
+            const op = {
+              id: operationObj.operationId,
+              httpMethod: method.toUpperCase(),
+              path,
+            };
+            operations.set(op.id, op);
+          }
         }
       }
 
@@ -240,58 +246,8 @@ export class Swagger {
   /**
    * @returns {Promise<Map<string, Operation>>} Map of the operations in this swagger, using `operationId` as key
    */
-  // async getOperations() {
-  //   return (await this.#getData()).operations;
-  // }
-
-  /**
-   * @returns {Promise<Map<string, Operation>>} Map of the operations in this swagger, using `operationId` as key
-   */
   async getOperations() {
-    /** @type {Map<string, Operation>} */
-    const operations = new Map();
-
-    const api = /** @type {import("openapi-types").OpenAPIV2.Document<{}>} */ (
-      await SwaggerParser.validate(this.#path, { validate: { spec: true } })
-    );
-
-    for (const [path, pathObject] of Object.entries(api.paths)) {
-      for (const [method, operation] of Object.entries(pathObject)) {
-        const operationObj = /** @type {OperationObject} */ (operation);
-        if (method !== "parameters" && operationObj.operationId !== undefined) {
-          const op = {
-            id: operationObj.operationId,
-            httpMethod: method.toUpperCase(),
-            path,
-          };
-          operations.set(op.id, op);
-        }
-      }
-    }
-
-    return operations;
-  }
-
-  /**
-   *
-   * @param {Map<string, Operation>} operations
-   * @param {string} path
-   * @param {PathObject} pathObject
-   * @returns {void}
-   */
-  #addOperations(operations, path, pathObject) {
-    for (const [method, operation] of Object.entries(
-      /** @type {Omit<PathObject, "parameters">} */ (pathObject),
-    )) {
-      if (method !== "parameters" && operation.operationId !== undefined) {
-        const operationObj = {
-          id: operation.operationId,
-          httpMethod: method.toUpperCase(),
-          path: path,
-        };
-        operations.set(operation.operationId, operationObj);
-      }
-    }
+    return (await this.#getData()).operations;
   }
 
   /**
