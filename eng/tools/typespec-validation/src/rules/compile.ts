@@ -1,12 +1,19 @@
 import { filterAsync } from "@azure-tools/specs-shared/array";
 import { readFile } from "fs/promises";
 import { globby } from "globby";
-import path, { basename, dirname, normalize } from "path";
+import path, { basename, dirname, normalize, resolve } from "path";
 import pc from "picocolors";
+import { simpleGit } from "simple-git";
 import stripAnsi from "strip-ansi";
 import { RuleResult } from "../rule-result.js";
 import { Rule } from "../rule.js";
-import { fileExists, getSuppressions, gitDiffTopSpecFolder, runNpm } from "../utils.js";
+import {
+  fileExists,
+  getSuppressions,
+  gitDiffTopSpecFolder,
+  normalizePath,
+  runNpm,
+} from "../utils.js";
 
 export class CompileRule implements Rule {
   readonly name = "Compile";
@@ -80,10 +87,41 @@ export class CompileRule implements Rule {
 
           // ../resource-manager/Microsoft.Contoso
           const outputFolder = dirname(dirname(dirname(outputSwaggers[0])));
-          const outputFilename = basename(outputSwaggers[0]);
-
           stdOutput += "\nOutput folder:\n";
           stdOutput += outputFolder + "\n";
+
+          // Ensure output folder is under expected folder for the identified structure (v1/v2)
+
+          const gitRoot = normalizePath(await simpleGit(folder).revparse("--show-toplevel"));
+          const relativePath = path.relative(gitRoot, folder).split(path.sep).join("/");
+
+          // If the folder containing TypeSpec sources is under "data-plane" or "resource-manager", the spec
+          // must be using "folder structure v2".  Otherwise, it must be using v1.
+          const structureVersion =
+            relativePath.includes("data-plane") || relativePath.includes("resource-manager")
+              ? 2
+              : 1;
+
+          const folderStruct = relativePath.split("/").filter(Boolean);
+          const allowedOutputFolder =
+            structureVersion === 1 ? path.join(gitRoot, ...folderStruct.slice(0, 2)) : folder;
+
+          stdOutput += "\nAllowed output folder:\n";
+          stdOutput += allowedOutputFolder + "\n";
+
+          const outputSwaggersRelative = outputSwaggers.map((s) =>
+            path.relative(gitRoot, resolve("", s)),
+          );
+          const invalidSwagger = outputSwaggersAbsolute.find(
+            (s) => !s.startsWith(allowedOutputFolder),
+          );
+          if (invalidSwagger) {
+            throw new Error(
+              `Output swagger '${invalidSwagger}' must be under path '${allowedOutputFolder}'`,
+            );
+          }
+
+          const outputFilename = basename(outputSwaggers[0]);
 
           // Filter to only specs matching the folder and filename extracted from the first output-file.
           // Necessary to handle multi-project specs like keyvault.
