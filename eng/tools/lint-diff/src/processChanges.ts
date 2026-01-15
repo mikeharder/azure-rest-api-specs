@@ -14,6 +14,8 @@ export async function getRunList(
   afterPath: string,
   changedFilesPath: string,
 ): Promise<[Map<string, ReadmeAffectedTags>, Map<string, ReadmeAffectedTags>, Set<string>]> {
+  console.error(`getRunList(${beforePath}, ${afterPath}, ${changedFilesPath})`);
+
   // Forward slashes are OK list coming from changedFilesPath is from git which
   // always uses forward slashes as path separators
 
@@ -44,6 +46,8 @@ export async function getRunList(
     affectedSwaggerCandidates,
   );
 
+  process.exit(0);
+
   console.log("Before readme and tags:");
   console.table(
     [...beforeTagMap].map(([readme, tags]) => ({ readme, tags: [...tags.changedTags] })),
@@ -72,6 +76,8 @@ export async function buildState(
   changedSpecFiles: string[],
   rootPath: string,
 ): Promise<[Map<string, ReadmeAffectedTags>, string[]]> {
+  console.error(`start buildState(${rootPath})`);
+
   // Filter changed files to include only those that exist in the rootPath
   const existingChangedFiles = [];
   for (const file of changedSpecFiles) {
@@ -84,6 +90,8 @@ export async function buildState(
   // e.g. specification/service1/readme.md -> specification/service1
   const affectedServiceDirectories = getAffectedServices(existingChangedFiles);
 
+  console.error(`building specModels`);
+
   // Build service models of affected services
   const specModels = new Map<string, SpecModel>();
   for (const serviceDir of affectedServiceDirectories) {
@@ -91,14 +99,22 @@ export async function buildState(
     specModels.set(serviceDir, specModel);
   }
 
+  console.error(`building readmeTags`);
+
   // Build a map of readme.md files and tags affected by the changed files
   const readmeTags = new Map<string, ReadmeAffectedTags>();
   for (const changedSwagger of existingChangedFiles.filter(swagger)) {
+    console.error(`changedSwagger: ${changedSwagger}`);
+
+    console.error(`getting specModel`);
     const specModel = specModels.get(getService(changedSwagger))!;
+
+    console.error(`getting affectedReadmes`);
     const affectedReadmes = await specModel.getAffectedReadmeTags(
       resolve(rootPath, changedSwagger),
     );
 
+    console.error(`setting readmeTags`);
     for (const [readmePath, tags] of affectedReadmes) {
       const affectedTags = readmeTags.get(readmePath) ?? {
         readme: (await specModel.getReadmes()).get(readmePath)!,
@@ -110,6 +126,8 @@ export async function buildState(
       readmeTags.set(readmePath, affectedTags);
     }
   }
+
+  console.error(`deduping tags`);
 
   // Deduplicate tags in readme files
   const changedFileAndTagsMap = new Map<string, ReadmeAffectedTags>();
@@ -128,6 +146,8 @@ export async function buildState(
       changedTags: new Set<string>(dedupedTags),
     });
   }
+
+  console.error(`adding readmes`);
 
   // For readme files that have changed but there are no affected swaggers,
   // add them to the map with no tags
@@ -153,16 +173,27 @@ export async function buildState(
     }
   }
 
+  console.error(`building affectedSwaggers`);
+
   const affectedSwaggers = new Set<string>();
   for (const changedSwagger of existingChangedFiles.filter(swagger)) {
+    console.error(`changedSwagger: ${changedSwagger}`);
+
+    console.error(`getting service`);
     const service = getService(changedSwagger);
+
+    console.error(`getting swaggerSet`);
     const swaggerSet = await specModels
       .get(service)!
       .getAffectedSwaggers(resolve(rootPath, changedSwagger));
+
+    console.error(`adding affectedSwaggers`);
     for (const swaggerPath of swaggerSet.keys()) {
       affectedSwaggers.add(relative(rootPath, swaggerPath));
     }
   }
+
+  console.error(`end buildState(${rootPath})`);
 
   // Return list of affected swagger files
   return [changedFileAndTagsMap, [...affectedSwaggers]];
@@ -179,6 +210,8 @@ export function reconcileChangedFilesAndTags(
   before: Map<string, ReadmeAffectedTags>,
   after: Map<string, ReadmeAffectedTags>,
 ): Map<string, ReadmeAffectedTags>[] {
+  console.error(`start reconcileChangedFilesAndTags()`);
+
   const beforeFinal = new Map<string, ReadmeAffectedTags>();
   const afterFinal = new Map<string, ReadmeAffectedTags>();
 
@@ -204,6 +237,8 @@ export function reconcileChangedFilesAndTags(
       changedTags: new Set([...tags.changedTags].filter((t) => afterTags.has(t))),
     });
   }
+
+  console.error(`end reconcileChangedFilesAndTags()`);
 
   return [beforeFinal, afterFinal];
 }
@@ -234,6 +269,8 @@ export async function readFileList(changedFilesPath: string): Promise<string[]> 
  * @returns A list of "services" that are affected by the changed files
  */
 export function getAffectedServices(changedFiles: string[]) {
+  console.error(`start getAffectedServices()`);
+
   const affectedServices = new Set<string>();
   for (const file of changedFiles) {
     const service = getService(file);
@@ -241,6 +278,9 @@ export function getAffectedServices(changedFiles: string[]) {
       affectedServices.add(service);
     }
   }
+
+  console.error(`end getAffectedServices()`);
+
   return affectedServices;
 }
 
@@ -281,6 +321,8 @@ export async function getChangedSwaggers(
   afterRoot: string,
   affectedSwaggerCandidates: Set<string>,
 ) {
+  console.error(`start getChangedSwaggers()`);
+
   const affectedSwaggers = new Set<string>();
 
   for (const swagger of affectedSwaggerCandidates) {
@@ -305,6 +347,8 @@ export async function getChangedSwaggers(
       affectedSwaggers.add(swagger);
     }
   }
+
+  console.error(`start getChangedSwaggers()`);
 
   return affectedSwaggers;
 }
