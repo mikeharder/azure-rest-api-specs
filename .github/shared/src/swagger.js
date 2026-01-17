@@ -4,7 +4,7 @@ import { dirname, relative } from "path";
 import { inspect } from "util";
 import { z } from "zod";
 import { mapAsync } from "./array.js";
-import { StringKeyCache, StringKeyPairCache } from "./cache.js";
+import { StringKeyCache } from "./cache.js";
 import { example, preview } from "./changed-files.js";
 import { resolveCached, resolvePairCached } from "./path.js";
 import { SpecModelError } from "./spec-model-error.js";
@@ -135,16 +135,10 @@ export class Swagger {
    */
   static #operationsCache = new StringKeyCache();
 
-  /** @type {StringKeyPairCache<Promise<Map<string, Swagger>>>} */
-  static #refCache = new StringKeyPairCache();
-
   /**
    * Caches reference paths extracted from a JSON object, using the resolved path (or content string itself) as the key.
    *
-   * We should *not* cache the returned Swagger objects themselves, for several reasons:
-   * - Swagger objects created from the same content may have different tags
-   * - Swagger objects have backpointers to SpecModel, so the captured object graph can be very large
-   * - Swagger object should be relatively "cheap", since the "expensive" properties are cached statically.
+   * Swagger objects should not be cached statically, because they may belong to different Tags, Readmes, or SpecModels.
    *
    * @type {StringKeyCache<Promise<string[]>>}
    */
@@ -165,6 +159,15 @@ export class Swagger {
 
   /** @type {Tag | undefined} Tag that contains this Swagger */
   #tag;
+
+  /** @type {Map<string, Swagger> | undefined} all references, safe to cache in instance (but not statically) */
+  #allRefs;
+
+  /** @type {Map<string, Swagger> | undefined} referenced swaggers (excluding examples), safe to cache in instance (but not statically) */
+  #refs;
+
+  /** @type {Map<string, Swagger> | undefined} referenced examples (excluding swaggers), safe to cache in instance (but not statically) */
+  #examples;
 
   /**
    * @param {string} path
@@ -236,69 +239,72 @@ export class Swagger {
    * @returns {Promise<Map<string, Swagger>>} Map of swaggers referenced from this swagger, using `path` as key
    */
   async getRefs() {
-    const allRefs = await this.#getRefs();
+    if (this.#refs === undefined) {
+      const allRefs = await this.#getRefs();
 
-    // filter out any paths that are examples
-    const filtered = new Map([...allRefs].filter(([path]) => !example(path)));
+      // filter out any paths that are examples
+      const filtered = new Map([...allRefs].filter(([path]) => !example(path)));
 
-    return filtered;
+      this.#refs = filtered;
+    }
+    return this.#refs;
   }
 
   async #getRefs() {
-    return await Swagger.#refCache.getOrCreate(
-      this.#tag?.name || "",
-      this.#content || this.#path,
-      async () => {
-        // Safe to cache refPaths, since it's just an array of string paths
-        const refPaths = await Swagger.#refPathCache.getOrCreate(
-          this.#content ?? this.#path,
-          async () => {
-            const contentJSON = await this.#getContentJSON();
+    if (this.#allRefs === undefined) {
+      // Safe to cache refPaths statically, since it's just an array of string paths
+      const refPaths = await Swagger.#refPathCache.getOrCreate(
+        this.#content ?? this.#path,
+        async () => {
+          const contentJSON = await this.#getContentJSON();
 
-            const schema = await this.#wrapError(
-              async () =>
-                await $RefParser.resolve(this.#path, contentJSON, {
-                  resolve: { file: excludeExamples, http: false },
-                }),
-              "Failed to resolve file for swagger",
-            );
+          const schema = await this.#wrapError(
+            async () =>
+              await $RefParser.resolve(this.#path, contentJSON, {
+                resolve: { file: excludeExamples, http: false },
+              }),
+            "Failed to resolve file for swagger",
+          );
 
-            return (
-              schema
-                .paths("file")
-                // Exclude ourself
-                .filter((p) => resolveCached(p) !== resolveCached(this.#path))
-            );
-          },
-        );
+          return (
+            schema
+              .paths("file")
+              // Exclude ourself
+              .filter((p) => resolveCached(p) !== resolveCached(this.#path))
+          );
+        },
+      );
 
-        // We should *not* cache the returned Swagger objects themselves, for two reasons:
-        // - Swagger objects created from the same content may have different tags
-        // - Swagger objects have backpointers to SpecModel, so the captured object graph can be very large
-        // - Swagger object should be relatively "cheap", since the "expensive" properties are cached statically.
-        return new Map(
-          refPaths.map((p) => {
-            const swagger = new Swagger(p, {
-              logger: this.#logger,
-              tag: this.#tag,
-            });
-            return [swagger.path, swagger];
-          }),
-        );
-      },
-    );
+      // Swagger objects should not be cached statically, because they may belong to different Tags, Readmes, or SpecModels.
+      // But, they are safe to cache in this instance.
+      this.#allRefs = new Map(
+        refPaths.map((p) => {
+          // TODO: Can we replace `new Swagger()` with "lookup existing swagger from Tag backpointer"?
+          const swagger = new Swagger(p, {
+            logger: this.#logger,
+            tag: this.#tag,
+          });
+          return [swagger.path, swagger];
+        }),
+      );
+    }
+
+    return this.#allRefs;
   }
 
   /**
    * @returns {Promise<Map<string, Swagger>>} Map of examples referenced from this swagger, using `path` as key
    */
   async getExamples() {
-    const allRefs = await this.#getRefs();
+    if (this.#examples === undefined) {
+      const allRefs = await this.#getRefs();
 
-    // filter out any paths that are examples
-    const filtered = new Map([...allRefs].filter(([path]) => example(path)));
+      // filter out any paths that are examples
+      const filtered = new Map([...allRefs].filter(([path]) => example(path)));
 
-    return filtered;
+      this.#examples = filtered;
+    }
+    return this.#examples;
   }
 
   /**
