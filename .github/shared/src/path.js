@@ -1,11 +1,11 @@
 import { basename, dirname, resolve } from "path";
-import { ObjectCache, ObjectCache2 } from "./cache.js";
+import { StringKeyCache, StringKeyPairCache } from "./cache.js";
 
-/** @type {ObjectCache<string>} */
-const resolveCache = new ObjectCache();
+/** @type {StringKeyCache<string>} */
+const resolveCache = new StringKeyCache();
 
-/** @type {ObjectCache2<string>} */
-const resolveCache2 = new ObjectCache2();
+/** @type {StringKeyPairCache<string>} */
+const resolvePairCache = new StringKeyPairCache();
 
 /**
  *
@@ -22,6 +22,8 @@ export function includesSegment(path, segment) {
 }
 
 /**
+ * Wraps `path.resolve(path)` with a cache to improve performance
+ *
  * @param {string} path
  * @returns {string}
  */
@@ -30,12 +32,14 @@ export function resolveCached(path) {
 }
 
 /**
- * @param {string} from
+ * Wraps `path.resolve(from, to)` with a cache to improve performance
+
+* @param {string} from
  * @param {string} to
  * @returns {string}
  */
-export function resolveCached2(from, to) {
-  return resolveCache2.getOrCreate(from, to, () => resolve(from, to));
+export function resolvePairCached(from, to) {
+  return resolvePairCache.getOrCreate(from, to, () => resolve(from, to));
 }
 
 /**
