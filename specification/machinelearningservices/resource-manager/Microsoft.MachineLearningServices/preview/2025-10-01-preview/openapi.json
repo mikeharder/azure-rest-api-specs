@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Azure Machine Learning Services",
+    "title": "Azure Machine Learning Services 2",
     "version": "2025-10-01-preview",
     "description": "These APIs allow end users to operate on Azure Machine Learning Workspace resources.",
     "x-typespec-generated": [
