@@ -61,7 +61,6 @@ export interface BreakingChangeDetectionContext {
   existingVersionSwaggers: string[]; // Files in existing API version directories
   newVersionSwaggers: string[]; // Files in completely new API version directories
   newVersionChangedSwaggers: string[]; // Files in existing API version directories that have changed
-  renamedSwaggers: { from: string; to: string }[];
   oadTracer: OadTraceData;
   msgs: ResultMessageRecord[];
   runtimeErrors: RawMessageRecord[];
@@ -76,7 +75,6 @@ export function createBreakingChangeDetectionContext(
   existingVersionSwaggers: string[],
   newVersionSwaggers: string[],
   newVersionChangedSwaggers: string[],
-  renamedSwaggers: { from: string; to: string }[],
   oadTracer: OadTraceData,
 ): BreakingChangeDetectionContext {
   return {
@@ -84,7 +82,6 @@ export function createBreakingChangeDetectionContext(
     existingVersionSwaggers,
     newVersionSwaggers,
     newVersionChangedSwaggers,
-    renamedSwaggers,
     oadTracer,
     msgs: [],
     runtimeErrors: [],
@@ -129,20 +126,6 @@ export async function checkBreakingChangeOnSameVersion(
       specIsPreview(swaggerPath)
         ? ApiVersionLifecycleStage.PREVIEW
         : ApiVersionLifecycleStage.STABLE,
-    );
-    aggregateOadViolationsCnt += oadViolationsCnt;
-    aggregateErrorCnt += errorCnt;
-    logMessage("Processing completed", LogLevel.EndGroup);
-  }
-
-  for (const { from, to } of detectionContext.renamedSwaggers) {
-    logMessage(`Processing rename: ${from} -> ${to}`, LogLevel.Group);
-    const { oadViolationsCnt, errorCnt } = await doBreakingChangeDetection(
-      detectionContext,
-      path.resolve(detectionContext.context.prInfo!.tempRepoFolder, from),
-      to,
-      BREAKING_CHANGES_CHECK_TYPES.SAME_VERSION,
-      specIsPreview(to) ? ApiVersionLifecycleStage.PREVIEW : ApiVersionLifecycleStage.STABLE,
     );
     aggregateOadViolationsCnt += oadViolationsCnt;
     aggregateErrorCnt += errorCnt;

@@ -75,8 +75,6 @@ export async function validateBreakingChange(context: Context): Promise<number> 
 
   const deletedSwaggers = diffs.deletions || [];
 
-  const renamedSwaggers = diffs.renames || [];
-
   const newExistingVersionDirs: string[] = [];
 
   const addedVersionDirs = [...newSwaggers.map((f: string) => path.dirname(f))];
@@ -158,7 +156,6 @@ export async function validateBreakingChange(context: Context): Promise<number> 
       needCompareOldSwaggers,
       newVersionSwaggers,
       newVersionChangedSwaggers,
-      renamedSwaggers,
       oadTracer,
     );
 
