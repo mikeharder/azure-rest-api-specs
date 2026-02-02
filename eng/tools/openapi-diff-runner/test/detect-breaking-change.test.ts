@@ -198,7 +198,7 @@ describe("detect-breaking-change", () => {
         existingVersionSwaggers: ["existing1.json", "existing2.json"],
         newVersionSwaggers: ["new1.json", "new2.json"],
         newVersionChangedSwaggers: ["changed1.json", "changed2.json"],
-        renamedSwaggers: [],
+        renamedSwaggers: [{from: "from.json", to: "to.json"}],
         msgs: [],
         runtimeErrors: [],
         oadTracer: { traces: [], baseBranch: "main", context },
@@ -876,6 +876,20 @@ describe("detect-breaking-change", () => {
     });
 
     it("should process all existing version swaggers", async () => {
+      mockDetectionContext.renamedSwaggers = [];
+
+      const result = await checkBreakingChangeOnSameVersion(mockDetectionContext);
+
+      expect(result).toBeDefined();
+      expect(result.msgs).toBeDefined();
+      expect(result.runtimeErrors).toBeDefined();
+      expect(result.oadViolationsCnt).toBeDefined();
+      expect(result.errorCnt).toBeDefined();
+    });
+
+    it("should process all renamed swaggers", async () => {
+      mockDetectionContext.existingVersionSwaggers = [];
+
       const result = await checkBreakingChangeOnSameVersion(mockDetectionContext);
 
       expect(result).toBeDefined();
@@ -887,6 +901,7 @@ describe("detect-breaking-change", () => {
 
     it("should handle empty existing version swaggers", async () => {
       mockDetectionContext.existingVersionSwaggers = [];
+      mockDetectionContext.renamedSwaggers = [];
 
       const result = await checkBreakingChangeOnSameVersion(mockDetectionContext);
 
