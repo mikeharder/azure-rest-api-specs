@@ -151,30 +151,42 @@ export async function getSwaggerDiffs(
       (rename) => swagger(rename.from) && swagger(rename.to),
     );
 
-    const manualRenames: { from: string; to: string }[] = [];
-
     // Try to manually match deletions with additions to form renames
+
+    // Store matches in temp array, to avoid modifying "filteredDeletions" while iterating
+    const matchedRenames: { from: string; to: string }[] = [];
+
     for (const deletion of filteredDeletions) {
+      const deletionDir = path.dirname(deletion).toLowerCase();
+
       const deletionMatches = filteredDeletions.filter(
-        (d) => path.dirname(deletion).toLowerCase() === path.dirname(d).toLowerCase(),
+        (d) => path.dirname(d).toLowerCase() === deletionDir,
       );
-      if (deletionMatches.length !== 1) {
+      if (deletionMatches.length > 1) {
+        // If more than one deletion from same folder, we can't match.
+        // Example would be migrating from "a.json, b.json" to "c.json"
         continue;
       }
+
       const additionMatches = filteredAdditions.filter(
-        (a) => path.dirname(deletion).toLowerCase() === path.dirname(a).toLowerCase(),
+        (a) => path.dirname(a).toLowerCase() === deletionDir,
       );
       if (additionMatches.length !== 1) {
+        // If more than one addition ins same folder, we can't match.
+        // Example would be migrating from "a.json" to "b.json, c.json"
         continue;
       }
-      manualRenames.push({ from: deletion, to: additionMatches[0] });
+
+      // Exactly one matching deletion and addition, so treat it like a "git rename"
+      matchedRenames.push({ from: deletion, to: additionMatches[0] });
     }
 
-    const renamesFrom = manualRenames.map((r) => r.from);
-    const renamesTo = manualRenames.map((r) => r.to);
+    // Update arrays with matchedRenames (if any)
+    const renamesFrom = matchedRenames.map((r) => r.from);
+    const renamesTo = matchedRenames.map((r) => r.to);
     filteredAdditions = filteredAdditions.filter((a) => !renamesTo.includes(a));
     filteredDeletions = filteredDeletions.filter((d) => !renamesFrom.includes(d));
-    filteredRenames = filteredRenames.concat(manualRenames);
+    filteredRenames = filteredRenames.concat(matchedRenames);
 
     return {
       additions: filteredAdditions,
