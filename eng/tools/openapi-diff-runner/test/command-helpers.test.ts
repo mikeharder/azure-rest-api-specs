@@ -491,6 +491,75 @@ describe("command-helpers", () => {
         total: 5, // 1 addition + 1 modification + 1 deletion + 2 renames
       });
     });
+
+    it.each([
+      {
+        from: "specification/foo/data-plane/Microsoft.Foo/stable/2024-01-01/from.json",
+        to: "specification/foo/data-plane/Microsoft.Foo/stable/2024-01-01/to.json",
+      },
+      {
+        from: "specification/foo/data-plane/MICROSOFT.FOO/stable/2024-01-01/from.json",
+        to: "specification/foo/data-plane/Microsoft.Foo/stable/2024-01-01/to.json",
+      },
+    ])(
+      "should manually match addition and deletion of single spec from same service (case-insensitive)",
+      async ({ from, to }) => {
+        const mockResult = {
+          additions: [to],
+          modifications: [],
+          deletions: [from],
+          renames: [],
+          total: 2,
+        };
+
+        mockGetChangedFilesStatuses.mockResolvedValue(mockResult);
+
+        const result = await getSwaggerDiffs();
+
+        expect(result).toEqual({
+          additions: [],
+          modifications: [],
+          deletions: [],
+          renames: [
+            {
+              from,
+              to,
+            },
+          ],
+          total: 1,
+        });
+      },
+    );
+
+    it.each([
+      { additions: ["to-a1"], deletions: [] },
+      { additions: ["to-a1"], deletions: ["from-b"] },
+      { additions: ["to-a1"], deletions: ["from-a1", "from-a2"] },
+      { additions: [], deletions: ["from-a1"] },
+      { additions: ["to-b"], deletions: ["from-a1"] },
+      { additions: ["to-a1", "to-a2"], deletions: ["from-a1"] },
+      { additions: ["to-a1", "to-a2"], deletions: ["from-a1", "from-a2"] },
+    ])("should not match zero or multiple additions or deletions", async (data) => {
+      const paths = new Map([
+        ["from-a1", "specification/a/data-plane/a/stable/2024-01-01/from-a1.json"],
+        ["from-a2", "specification/a/data-plane/a/stable/2024-01-01/from-a1.json"],
+        ["to-a1", "specification/a/data-plane/a/stable/2024-01-01/to-a1.json"],
+        ["to-a2", "specification/a/data-plane/a/stable/2024-01-01/to-a2.json"],
+        ["from-b", "specification/b/data-plane/b/stable/2024-01-01/from-b.json"],
+        ["to-b", "specification/b/data-plane/b/stable/2024-01-01/to-b.json"],
+      ]);
+
+      let mockResult = {
+        additions: data.additions.map((a) => paths.get(a) || ""),
+        modifications: [],
+        deletions: data.deletions.map((d) => paths.get(d) || ""),
+        renames: [],
+        total: data.additions.length + data.deletions.length,
+      };
+      mockGetChangedFilesStatuses.mockResolvedValue(mockResult);
+      let result = await getSwaggerDiffs();
+      expect(result).toEqual(mockResult);
+    });
   });
 
   describe("buildPrInfo", () => {
