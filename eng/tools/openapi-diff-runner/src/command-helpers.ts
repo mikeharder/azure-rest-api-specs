@@ -144,12 +144,37 @@ export async function getSwaggerDiffs(
     });
 
     // Filter each array to only include Swagger files using the swagger filter from changed-files.js
-    const filteredAdditions = result.additions.filter(swagger);
+    let filteredAdditions = result.additions.filter(swagger);
     const filteredModifications = result.modifications.filter(swagger);
-    const filteredDeletions = result.deletions.filter(swagger);
-    const filteredRenames = result.renames.filter(
+    let filteredDeletions = result.deletions.filter(swagger);
+    let filteredRenames = result.renames.filter(
       (rename) => swagger(rename.from) && swagger(rename.to),
     );
+
+    const manualRenames: { from: string; to: string }[] = [];
+
+    // Try to manually match deletions with additions to form renames
+    for (const deletion of filteredDeletions) {
+      const deletionMatches = filteredDeletions.filter(
+        (d) => path.dirname(deletion).toLowerCase() === path.dirname(d).toLowerCase(),
+      );
+      if (deletionMatches.length !== 1) {
+        continue;
+      }
+      const additionMatches = filteredAdditions.filter(
+        (a) => path.dirname(deletion).toLowerCase() === path.dirname(a).toLowerCase(),
+      );
+      if (additionMatches.length !== 1) {
+        continue;
+      }
+      manualRenames.push({ from: deletion, to: additionMatches[0] });
+    }
+
+    const renamesFrom = manualRenames.map((r) => r.from);
+    const renamesTo = manualRenames.map((r) => r.to);
+    filteredAdditions = filteredAdditions.filter((a) => !renamesTo.includes(a));
+    filteredDeletions = filteredDeletions.filter((d) => !renamesFrom.includes(d));
+    filteredRenames = filteredRenames.concat(manualRenames);
 
     return {
       additions: filteredAdditions,
