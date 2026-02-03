@@ -188,7 +188,7 @@ export async function buildPrInfo(context: Context): Promise<void> {
 }
 
 // Constants and state for dummy swagger management
-const whitelistsBranches = ["ARMCoreRPDev", "rpsaasmaster"];
+const whitelistsBranches = ["ARMCoreRPDev", "rpsaasmaster", "nginx-before"];
 const createdDummySwagger: string[] = [];
 
 /**
