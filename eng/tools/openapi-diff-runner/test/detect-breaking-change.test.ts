@@ -40,7 +40,13 @@ vi.mock("../src/detect-breaking-change.js", async () => {
     createBreakingChangeDetectionContext: vi
       .fn()
       .mockImplementation(
-        (context, existingVersionSwaggers, newVersionSwaggers, newVersionChangedSwaggers, renamedSwaggers) => ({
+        (
+          context,
+          existingVersionSwaggers,
+          newVersionSwaggers,
+          newVersionChangedSwaggers,
+          renamedSwaggers,
+        ) => ({
           context,
           existingVersionSwaggers,
           newVersionSwaggers,
@@ -198,7 +204,7 @@ describe("detect-breaking-change", () => {
         existingVersionSwaggers: ["existing1.json", "existing2.json"],
         newVersionSwaggers: ["new1.json", "new2.json"],
         newVersionChangedSwaggers: ["changed1.json", "changed2.json"],
-        renamedSwaggers: [{from: "from.json", to: "to.json"}],
+        renamedSwaggers: [{ from: "from.json", to: "to.json" }],
         msgs: [],
         runtimeErrors: [],
         oadTracer: { traces: [], baseBranch: "main", context },
@@ -852,7 +858,7 @@ describe("detect-breaking-change", () => {
         ["existing1.json"],
         ["new1.json"],
         ["changed1.json"],
-        [{from: "from.json", to: "to.json"}],
+        [{ from: "from.json", to: "to.json" }],
         {} as any,
       );
 
@@ -861,7 +867,7 @@ describe("detect-breaking-change", () => {
       expect(context.existingVersionSwaggers).toEqual(["existing1.json"]);
       expect(context.newVersionSwaggers).toEqual(["new1.json"]);
       expect(context.newVersionChangedSwaggers).toEqual(["changed1.json"]);
-      expect(context.renamedSwaggers).toEqual([{from: "from.json", to: "to.json"}]);
+      expect(context.renamedSwaggers).toEqual([{ from: "from.json", to: "to.json" }]);
     });
   });
 
