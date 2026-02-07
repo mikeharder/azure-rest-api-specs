@@ -262,7 +262,7 @@ const cases = [
   {
     name: "rename one file, one version, as add/remove",
     changedFiles: {
-      // If a file is renamed, but has too many changes, git may return it as an
+      // If a file is renamed, but has too many changes, "git diff" may return it as an
       // add/delete, rather than a rename.
       additions: ["specification/foo/data-plane/Foo/stable/2025-01-01/openapi.json"],
       deletions: ["specification/foo/data-plane/Foo/stable/2025-01-01/foo.json"],
