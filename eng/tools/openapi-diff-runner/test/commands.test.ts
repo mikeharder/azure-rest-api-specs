@@ -260,6 +260,28 @@ const cases = [
     },
   },
   {
+    name: "rename one file, one version, as add/remove",
+    changedFiles: {
+      // If a file is renamed, but has too many changes, git may return it as an
+      // add/delete, rather than a rename.
+      additions: ["specification/foo/data-plane/Foo/stable/2025-01-01/openapi.json"],
+      deletions: ["specification/foo/data-plane/Foo/stable/2025-01-01/foo.json"],
+    },
+    expectedCreateDummySwaggers: {
+      old: [],
+      new: [],
+    },
+    expectedOadCalls: {
+      sameVersion: [
+        {
+          old: "specification/foo/data-plane/Foo/stable/2025-01-01/foo.json",
+          new: "specification/foo/data-plane/Foo/stable/2025-01-01/openapi.json",
+        },
+      ],
+      crossVersion: [],
+    },
+  },
+  {
     name: "rename one file, change case of service",
     changedFiles: {
       addtions: ["specification/foo/data-plane/foo/stable/2025-01-01/openapi.json"],
