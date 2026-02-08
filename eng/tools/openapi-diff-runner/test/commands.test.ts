@@ -284,20 +284,18 @@ const cases = [
   {
     name: "rename one file, change case of service",
     changedFiles: {
-      addtions: ["specification/foo/data-plane/foo/stable/2025-01-01/openapi.json"],
+      additions: ["specification/foo/data-plane/foo/stable/2025-01-01/openapi.json"],
       deletions: ["specification/foo/data-plane/Foo/stable/2025-01-01/foo.json"],
     },
-    // TODO: After code is fixed, should not create *any* dummy swaggers
     expectedCreateDummySwaggers: {
       old: [],
-      new: ["specification/foo/data-plane/Foo/stable/2025-01-01/foo.json"],
+      new: [],
     },
-    // TODO: After code is fixed, should only compare before and after renamed file
     expectedOadCalls: {
       sameVersion: [
         {
           old: "specification/foo/data-plane/Foo/stable/2025-01-01/foo.json",
-          new: "specification/foo/data-plane/Foo/stable/2025-01-01/foo.json",
+          new: "specification/foo/data-plane/foo/stable/2025-01-01/openapi.json",
         },
       ],
       crossVersion: [],
