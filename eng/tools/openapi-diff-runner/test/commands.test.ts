@@ -303,40 +303,44 @@ const cases = [
       crossVersion: [],
     },
   },
-
-  // Currently failing, code needs better support for renames
-  //
-  // {
-  //   name: "change case folder, rename file",
-  //   changedFiles: {
-  //     additions: [
-  //       "specification/nginx/resource-manager/Nginx.NginxPlus/preview/2025-03-01-preview/openapi.json",
-  //     ],
-  //     deletions: [
-  //       "specification/nginx/resource-manager/NGINX.NGINXPLUS/preview/2025-03-01-preview/swagger.json",
-  //     ],
-  //     renames: [
-  //       {
-  //         from: "specification/nginx/resource-manager/NGINX.NGINXPLUS/stable/2023-09-01/swagger.json",
-  //         to: "specification/nginx/resource-manager/Nginx.NginxPlus/stable/2023-09-01/swagger.json",
-  //       },
-  //     ],
-  //   },
-  //   existingFiles: [
-  //     "specification/nginx/resource-manager/NGINX.NGINXPLUS/stable/2023-09-01/swagger.json",
-  //     "specification/nginx/resource-manager/NGINX.NGINXPLUS/preview/2025-03-01-preview/swagger.json",
-  //   ],
-  //   expectedOadCalls: [
-  //     {
-  //       old: "specification/nginx/resource-manager/NGINX.NGINXPLUS/preview/2025-03-01-preview/swagger.json",
-  //       new: "specification/nginx/resource-manager/Nginx.NginxPlus/preview/2025-03-01-preview/openapi.json",
-  //     },
-  //     {
-  //       old: "specification/nginx/resource-manager/NGINX.NGINXPLUS/stable/2023-09-01/swagger.json",
-  //       new: "specification/nginx/resource-manager/Nginx.NginxPlus/stable/2023-09-01/swagger.json",
-  //     },
-  //   ],
-  // },
+  {
+    name: "change case folder, rename file",
+    changedFiles: {
+      additions: [
+        "specification/nginx/resource-manager/Nginx.NginxPlus/preview/2025-03-01-preview/openapi.json",
+      ],
+      deletions: [
+        "specification/nginx/resource-manager/NGINX.NGINXPLUS/preview/2025-03-01-preview/swagger.json",
+      ],
+      renames: [
+        {
+          from: "specification/nginx/resource-manager/NGINX.NGINXPLUS/stable/2023-09-01/swagger.json",
+          to: "specification/nginx/resource-manager/Nginx.NginxPlus/stable/2023-09-01/swagger.json",
+        },
+      ],
+    },
+    existingFiles: [
+      "specification/nginx/resource-manager/NGINX.NGINXPLUS/stable/2023-09-01/swagger.json",
+      "specification/nginx/resource-manager/NGINX.NGINXPLUS/preview/2025-03-01-preview/swagger.json",
+    ],
+    expectedCreateDummySwaggers: {
+      old: [],
+      new: [],
+    },
+    expectedOadCalls: {
+      sameVersion: [
+        {
+          old: "specification/nginx/resource-manager/NGINX.NGINXPLUS/preview/2025-03-01-preview/swagger.json",
+          new: "specification/nginx/resource-manager/Nginx.NginxPlus/preview/2025-03-01-preview/openapi.json",
+        },
+        {
+          old: "specification/nginx/resource-manager/NGINX.NGINXPLUS/stable/2023-09-01/swagger.json",
+          new: "specification/nginx/resource-manager/Nginx.NginxPlus/stable/2023-09-01/swagger.json",
+        },
+      ],
+      crossVersion: [],
+    },
+  },
 ];
 
 describe("validateBreakingChange", () => {
