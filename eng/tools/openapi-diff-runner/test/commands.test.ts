@@ -240,8 +240,8 @@ const cases = [
     changedFiles: {
       renames: [
         {
-          from: "specification/foo/data-plane/Foo/stable/2025-01-01/foo.json",
-          to: "specification/foo/data-plane/Foo/stable/2025-01-01/openapi.json",
+          from: "specification/foo/data-plane/Foo/stable/2025-03-01/foo.json",
+          to: "specification/foo/data-plane/Foo/stable/2025-03-01/openapi.json",
         },
       ],
     },
@@ -252,8 +252,8 @@ const cases = [
     expectedOadCalls: {
       sameVersion: [
         {
-          old: "specification/foo/data-plane/Foo/stable/2025-01-01/foo.json",
-          new: "specification/foo/data-plane/Foo/stable/2025-01-01/openapi.json",
+          old: "specification/foo/data-plane/Foo/stable/2025-03-01/foo.json",
+          new: "specification/foo/data-plane/Foo/stable/2025-03-01/openapi.json",
         },
       ],
       crossVersion: [],
@@ -264,8 +264,8 @@ const cases = [
     changedFiles: {
       // If a file is renamed, but has too many changes, "git diff" may return it as an
       // add/delete, rather than a rename.
-      additions: ["specification/foo/data-plane/Foo/stable/2025-01-01/openapi.json"],
-      deletions: ["specification/foo/data-plane/Foo/stable/2025-01-01/foo.json"],
+      additions: ["specification/foo/data-plane/Foo/stable/2025-03-01/openapi.json"],
+      deletions: ["specification/foo/data-plane/Foo/stable/2025-03-01/foo.json"],
     },
     expectedCreateDummySwaggers: {
       old: [],
@@ -274,8 +274,8 @@ const cases = [
     expectedOadCalls: {
       sameVersion: [
         {
-          old: "specification/foo/data-plane/Foo/stable/2025-01-01/foo.json",
-          new: "specification/foo/data-plane/Foo/stable/2025-01-01/openapi.json",
+          old: "specification/foo/data-plane/Foo/stable/2025-03-01/foo.json",
+          new: "specification/foo/data-plane/Foo/stable/2025-03-01/openapi.json",
         },
       ],
       crossVersion: [],
@@ -284,8 +284,34 @@ const cases = [
   {
     name: "rename one file, change case of service",
     changedFiles: {
-      additions: ["specification/foo/data-plane/foo/stable/2025-01-01/openapi.json"],
-      deletions: ["specification/foo/data-plane/Foo/stable/2025-01-01/foo.json"],
+      additions: ["specification/foo/data-plane/foo/stable/2025-03-01/openapi.json"],
+      deletions: ["specification/foo/data-plane/Foo/stable/2025-03-01/foo.json"],
+    },
+    expectedCreateDummySwaggers: {
+      old: [],
+      new: [],
+    },
+    expectedOadCalls: {
+      sameVersion: [
+        {
+          old: "specification/foo/data-plane/Foo/stable/2025-03-01/foo.json",
+          new: "specification/foo/data-plane/foo/stable/2025-03-01/openapi.json",
+        },
+      ],
+      crossVersion: [],
+    },
+  },
+  {
+    name: "rename files, change case of service, two versions",
+    changedFiles: {
+      additions: ["specification/foo/data-plane/foo/stable/2025-03-01/openapi.json"],
+      deletions: ["specification/foo/data-plane/Foo/stable/2025-03-01/foo.json"],
+      renames: [
+        {
+          from: "specification/foo/data-plane/Foo/stable/2025-01-01/foo.json",
+          to: "specification/foo/data-plane/foo/stable/2025-01-01/foo.json",
+        },
+      ],
     },
     expectedCreateDummySwaggers: {
       old: [],
@@ -295,45 +321,46 @@ const cases = [
       sameVersion: [
         {
           old: "specification/foo/data-plane/Foo/stable/2025-01-01/foo.json",
-          new: "specification/foo/data-plane/foo/stable/2025-01-01/openapi.json",
+          new: "specification/foo/data-plane/foo/stable/2025-01-01/foo.json",
+        },
+        {
+          old: "specification/foo/data-plane/Foo/stable/2025-03-01/foo.json",
+          new: "specification/foo/data-plane/foo/stable/2025-03-01/openapi.json",
         },
       ],
       crossVersion: [],
     },
   },
   {
-    name: "change case folder, rename file",
+    name: "convert two swaggers to one",
     changedFiles: {
-      additions: [
-        "specification/nginx/resource-manager/Nginx.NginxPlus/preview/2025-03-01-preview/openapi.json",
-      ],
+      additions: ["specification/bar/data-plane/Bar/stable/2025-03-01/openapi.json"],
       deletions: [
-        "specification/nginx/resource-manager/NGINX.NGINXPLUS/preview/2025-03-01-preview/swagger.json",
+        "specification/bar/data-plane/Bar/stable/2025-03-01/bar.json",
+        "specification/bar/data-plane/Bar/stable/2025-03-01/baz.json",
       ],
-      renames: [
-        {
-          from: "specification/nginx/resource-manager/NGINX.NGINXPLUS/stable/2023-09-01/swagger.json",
-          to: "specification/nginx/resource-manager/Nginx.NginxPlus/stable/2023-09-01/swagger.json",
-        },
-      ],
+      renames: [],
     },
-    existingFiles: [
-      "specification/nginx/resource-manager/NGINX.NGINXPLUS/stable/2023-09-01/swagger.json",
-      "specification/nginx/resource-manager/NGINX.NGINXPLUS/preview/2025-03-01-preview/swagger.json",
-    ],
     expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
+      old: ["specification/bar/data-plane/Bar/stable/2025-03-01/openapi.json"],
+      new: [
+        "specification/bar/data-plane/Bar/stable/2025-03-01/bar.json",
+        "specification/bar/data-plane/Bar/stable/2025-03-01/baz.json",
+      ],
     },
     expectedOadCalls: {
       sameVersion: [
         {
-          old: "specification/nginx/resource-manager/NGINX.NGINXPLUS/preview/2025-03-01-preview/swagger.json",
-          new: "specification/nginx/resource-manager/Nginx.NginxPlus/preview/2025-03-01-preview/openapi.json",
+          old: "specification/bar/data-plane/Bar/stable/2025-03-01/bar.json",
+          new: "specification/bar/data-plane/Bar/stable/2025-03-01/bar.json",
         },
         {
-          old: "specification/nginx/resource-manager/NGINX.NGINXPLUS/stable/2023-09-01/swagger.json",
-          new: "specification/nginx/resource-manager/Nginx.NginxPlus/stable/2023-09-01/swagger.json",
+          old: "specification/bar/data-plane/Bar/stable/2025-03-01/baz.json",
+          new: "specification/bar/data-plane/Bar/stable/2025-03-01/baz.json",
+        },
+        {
+          old: "specification/bar/data-plane/Bar/stable/2025-03-01/openapi.json",
+          new: "specification/bar/data-plane/Bar/stable/2025-03-01/openapi.json",
         },
       ],
       crossVersion: [],
