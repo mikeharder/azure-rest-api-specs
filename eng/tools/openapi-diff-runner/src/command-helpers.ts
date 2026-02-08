@@ -151,10 +151,6 @@ export async function getSwaggerDiffs(
       (rename) => swagger(rename.from) && swagger(rename.to),
     );
 
-    // Add renamed files to the additions array and deletions array
-    // filteredAdditions.push(...filteredRenames.map((rename) => rename.to));
-    // filteredDeletions.push(...filteredRenames.map((rename) => rename.from));
-
     return {
       additions: filteredAdditions,
       modifications: filteredModifications,
