@@ -151,34 +151,23 @@ export async function getSwaggerDiffs(
       (rename) => swagger(rename.from) && swagger(rename.to),
     );
 
-    // Try to manually match deletions with additions to form renames
-
     // Store matches in temp array, to avoid modifying "filteredDeletions" while iterating
     const matchedRenames: { from: string; to: string }[] = [];
 
+    // Try to manually match deletions with additions to form renames
     for (const deletion of filteredDeletions) {
       const deletionDir = path.dirname(deletion).toLowerCase();
-
-      const deletionMatches = filteredDeletions.filter(
-        (d) => path.dirname(d).toLowerCase() === deletionDir,
-      );
-      if (deletionMatches.length > 1) {
-        // If more than one deletion from same folder, we can't match.
-        // Example would be migrating from "a.json, b.json" to "c.json"
-        continue;
-      }
 
       const additionMatches = filteredAdditions.filter(
         (a) => path.dirname(a).toLowerCase() === deletionDir,
       );
-      if (additionMatches.length !== 1) {
-        // If more than one addition in same folder, we can't match.
-        // Example would be migrating from "a.json" to "b.json, c.json"
-        continue;
-      }
 
-      // Exactly one matching deletion and addition, so treat it like a "git rename"
-      matchedRenames.push({ from: deletion, to: additionMatches[0] });
+      // If there are multiple matching additions (which should be rare), it's safest
+      // to add all the combinations as "renames".  This will probably always trigger a check failure,
+      // but it's safest to "fail closed" this way, rather than ignoring the files.
+      for (const addition of additionMatches) {
+        matchedRenames.push({ from: deletion, to: addition });
+      }
     }
 
     // Update arrays with matchedRenames (if any)
