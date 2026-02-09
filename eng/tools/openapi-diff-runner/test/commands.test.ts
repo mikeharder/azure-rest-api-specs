@@ -252,6 +252,29 @@ const cases: TestCase[] = [
     },
   },
   {
+    name: "add new stable, one of multiple files",
+    changedFiles: {
+      additions: ["Bar/stable/2026-01-01/bar.json"],
+    },
+    expectedCreateDummySwaggers: {
+      old: [],
+      new: [],
+    },
+    expectedOadCalls: {
+      sameVersion: [],
+      crossVersion: [
+        {
+          old: "Bar/preview/2025-04-01-preview/bar.json",
+          new: "Bar/stable/2026-01-01/bar.json",
+        },
+        {
+          old: "Bar/stable/2025-03-01/bar.json",
+          new: "Bar/stable/2026-01-01/bar.json",
+        },
+      ],
+    },
+  },
+  {
     name: "add new stable, change case of service",
     changedFiles: {
       additions: ["FOO/stable/2026-01-01/foo.json"],
