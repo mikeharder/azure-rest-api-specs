@@ -254,7 +254,7 @@ const cases: TestCase[] = [
   {
     name: "add new stable, change case of service",
     changedFiles: {
-      additions: ["specification/foo/data-plane/FOO/stable/2026-01-01/foo.json"],
+      additions: ["FOO/stable/2026-01-01/foo.json"],
     },
     expectedCreateDummySwaggers: {
       old: [],
@@ -264,12 +264,12 @@ const cases: TestCase[] = [
       sameVersion: [],
       crossVersion: [
         {
-          old: "specification/foo/data-plane/Foo/preview/2025-04-01-preview/foo.json",
-          new: "specification/foo/data-plane/FOO/stable/2026-01-01/foo.json",
+          old: "Foo/preview/2025-04-01-preview/foo.json",
+          new: "FOO/stable/2026-01-01/foo.json",
         },
         {
-          old: "specification/foo/data-plane/Foo/stable/2025-03-01/foo.json",
-          new: "specification/foo/data-plane/FOO/stable/2026-01-01/foo.json",
+          old: "Foo/stable/2025-03-01/foo.json",
+          new: "FOO/stable/2026-01-01/foo.json",
         },
       ],
     },
@@ -277,7 +277,7 @@ const cases: TestCase[] = [
   {
     name: "add new stable, change name of file",
     changedFiles: {
-      additions: ["specification/foo/data-plane/Foo/stable/2026-01-01/openapi.json"],
+      additions: ["Foo/stable/2026-01-01/openapi.json"],
     },
     expectedCreateDummySwaggers: {
       old: [],
@@ -287,12 +287,12 @@ const cases: TestCase[] = [
       sameVersion: [],
       crossVersion: [
         {
-          old: "specification/foo/data-plane/Foo/preview/2025-04-01-preview/foo.json",
-          new: "specification/foo/data-plane/Foo/stable/2026-01-01/openapi.json",
+          old: "Foo/preview/2025-04-01-preview/foo.json",
+          new: "Foo/stable/2026-01-01/openapi.json",
         },
         {
-          old: "specification/foo/data-plane/Foo/stable/2025-03-01/foo.json",
-          new: "specification/foo/data-plane/Foo/stable/2026-01-01/openapi.json",
+          old: "Foo/stable/2025-03-01/foo.json",
+          new: "Foo/stable/2026-01-01/openapi.json",
         },
       ],
     },
@@ -300,7 +300,7 @@ const cases: TestCase[] = [
   {
     name: "add new stable, change name of file and case of service",
     changedFiles: {
-      additions: ["specification/foo/data-plane/FOO/stable/2026-01-01/openapi.json"],
+      additions: ["FOO/stable/2026-01-01/openapi.json"],
     },
     expectedCreateDummySwaggers: {
       old: [],
@@ -310,12 +310,12 @@ const cases: TestCase[] = [
       sameVersion: [],
       crossVersion: [
         {
-          old: "specification/foo/data-plane/Foo/preview/2025-04-01-preview/foo.json",
-          new: "specification/foo/data-plane/FOO/stable/2026-01-01/openapi.json",
+          old: "Foo/preview/2025-04-01-preview/foo.json",
+          new: "FOO/stable/2026-01-01/openapi.json",
         },
         {
-          old: "specification/foo/data-plane/Foo/stable/2025-03-01/foo.json",
-          new: "specification/foo/data-plane/FOO/stable/2026-01-01/openapi.json",
+          old: "Foo/stable/2025-03-01/foo.json",
+          new: "FOO/stable/2026-01-01/openapi.json",
         },
       ],
     },
@@ -349,8 +349,54 @@ const cases: TestCase[] = [
     changedFiles: {
       // If a file is renamed, but has too many changes, "git diff" may return it as an
       // add/delete, rather than a rename.
-      additions: ["specification/foo/data-plane/Foo/stable/2025-03-01/openapi.json"],
-      deletions: ["specification/foo/data-plane/Foo/stable/2025-03-01/foo.json"],
+      additions: ["Foo/stable/2025-03-01/openapi.json"],
+      deletions: ["Foo/stable/2025-03-01/foo.json"],
+    },
+    expectedCreateDummySwaggers: {
+      old: [],
+      new: [],
+    },
+    expectedOadCalls: {
+      sameVersion: [
+        {
+          old: "Foo/stable/2025-03-01/foo.json",
+          new: "Foo/stable/2025-03-01/openapi.json",
+        },
+      ],
+      crossVersion: [],
+    },
+  },
+  {
+    name: "rename one file, change case of service",
+    changedFiles: {
+      additions: ["FOO/stable/2025-03-01/openapi.json"],
+      deletions: ["Foo/stable/2025-03-01/foo.json"],
+    },
+    expectedCreateDummySwaggers: {
+      old: [],
+      new: [],
+    },
+    expectedOadCalls: {
+      sameVersion: [
+        {
+          old: "Foo/stable/2025-03-01/foo.json",
+          new: "FOO/stable/2025-03-01/openapi.json",
+        },
+      ],
+      crossVersion: [],
+    },
+  },
+  {
+    name: "rename files, change case of service, two versions",
+    changedFiles: {
+      additions: ["FOO/stable/2025-03-01/openapi.json"],
+      deletions: ["Foo/stable/2025-03-01/foo.json"],
+      renames: [
+        {
+          from: "Foo/stable/2025-01-01/foo.json",
+          to: "FOO/stable/2025-01-01/foo.json",
+        },
+      ],
     },
     expectedCreateDummySwaggers: {
       old: [],
@@ -360,57 +406,11 @@ const cases: TestCase[] = [
       sameVersion: [
         {
           old: "Foo/stable/2025-01-01/foo.json",
-          new: "Foo/stable/2025-01-01/openapi.json",
-        },
-      ],
-      crossVersion: [],
-    },
-  },
-  {
-    name: "rename one file, change case of service",
-    changedFiles: {
-      additions: ["specification/foo/data-plane/FOO/stable/2025-03-01/openapi.json"],
-      deletions: ["specification/foo/data-plane/Foo/stable/2025-03-01/foo.json"],
-    },
-    expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
-    },
-    expectedOadCalls: {
-      sameVersion: [
-        {
-          old: "specification/foo/data-plane/Foo/stable/2025-03-01/foo.json",
-          new: "specification/foo/data-plane/FOO/stable/2025-03-01/openapi.json",
-        },
-      ],
-      crossVersion: [],
-    },
-  },
-  {
-    name: "rename files, change case of service, two versions",
-    changedFiles: {
-      additions: ["specification/foo/data-plane/FOO/stable/2025-03-01/openapi.json"],
-      deletions: ["specification/foo/data-plane/Foo/stable/2025-03-01/foo.json"],
-      renames: [
-        {
-          from: "specification/foo/data-plane/Foo/stable/2025-01-01/foo.json",
-          to: "specification/foo/data-plane/FOO/stable/2025-01-01/foo.json",
-        },
-      ],
-    },
-    expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
-    },
-    expectedOadCalls: {
-      sameVersion: [
-        {
-          old: "specification/foo/data-plane/Foo/stable/2025-01-01/foo.json",
-          new: "specification/foo/data-plane/FOO/stable/2025-01-01/foo.json",
+          new: "FOO/stable/2025-01-01/foo.json",
         },
         {
-          old: "specification/foo/data-plane/Foo/stable/2025-03-01/foo.json",
-          new: "specification/foo/data-plane/FOO/stable/2025-03-01/openapi.json",
+          old: "Foo/stable/2025-03-01/foo.json",
+          new: "FOO/stable/2025-03-01/openapi.json",
         },
       ],
       crossVersion: [],
@@ -447,11 +447,8 @@ const cases: TestCase[] = [
   {
     name: "convert one swagger to two (very rare)",
     changedFiles: {
-      additions: [
-        "specification/foo/data-plane/Foo/stable/2025-03-01/openapi1.json",
-        "specification/foo/data-plane/Foo/stable/2025-03-01/openapi2.json",
-      ],
-      deletions: ["specification/foo/data-plane/Foo/stable/2025-03-01/foo.json"],
+      additions: ["Foo/stable/2025-03-01/openapi1.json", "Foo/stable/2025-03-01/openapi2.json"],
+      deletions: ["Foo/stable/2025-03-01/foo.json"],
       renames: [],
     },
     expectedCreateDummySwaggers: {
@@ -461,12 +458,12 @@ const cases: TestCase[] = [
     expectedOadCalls: {
       sameVersion: [
         {
-          old: "specification/foo/data-plane/Foo/stable/2025-03-01/foo.json",
-          new: "specification/foo/data-plane/Foo/stable/2025-03-01/openapi1.json",
+          old: "Foo/stable/2025-03-01/foo.json",
+          new: "Foo/stable/2025-03-01/openapi1.json",
         },
         {
-          old: "specification/foo/data-plane/Foo/stable/2025-03-01/foo.json",
-          new: "specification/foo/data-plane/Foo/stable/2025-03-01/openapi2.json",
+          old: "Foo/stable/2025-03-01/foo.json",
+          new: "Foo/stable/2025-03-01/openapi2.json",
         },
       ],
       crossVersion: [],
