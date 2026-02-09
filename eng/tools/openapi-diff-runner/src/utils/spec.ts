@@ -46,6 +46,9 @@ async function getPrecedingSwaggerByType(
     };
   });
 
+  // TODO: Also include swaggers, if the version folder matches (case-insensitive), and the
+  // before and after folders only include a single file
+
   const versionsOfType = swaggersWithVersions.filter(
     (item) =>
       item.fileName === fileName &&
