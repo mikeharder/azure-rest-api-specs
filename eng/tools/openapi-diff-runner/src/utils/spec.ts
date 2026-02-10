@@ -63,7 +63,13 @@ async function getPrecedingSwaggerByType(
     const swaggersMatchingVersion = versionsOfType.filter(
       (item) => item.version === mostRecentVersion,
     );
-    return swaggersMatchingVersion[0].swagger.path;
+
+    const swaggerMatchingFilename = swaggersMatchingVersion.find(
+      (item) => item.fileName == fileName,
+    );
+
+    // TODO: Return array of paths if multiple matches, like same version
+    return swaggerMatchingFilename?.swagger.path ?? swaggersMatchingVersion[0].swagger.path;
   }
 
   return undefined;
