@@ -432,6 +432,8 @@ export function getReadmeFolder(swaggerFile: string) {
  * @returns SpecModel instance for the folder containing the swagger file or undefined if the folder does not exist
  */
 export function getSpecModel(specRepoFolder: string, swaggerPath: string): SpecModel | undefined {
+  // TODO: Should this take specRepoFolder as well, to search in the source folder, where it
+  // ultmately creates the spec model?  Also should match case insensitive, if not too expensive.
   const folder = getReadmeFolder(swaggerPath);
 
   if (!folder) {

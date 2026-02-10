@@ -49,8 +49,8 @@ async function getPrecedingSwaggerByType(
   const versionsOfType = swaggersWithVersions.filter(
     (item) =>
       (item.fileName === fileName ||
-        basename(dirname(dirname(dirname(item.swagger.path)))) ===
-          basename(dirname(dirname(dirname(targetSwaggerPath))))) &&
+        basename(dirname(dirname(dirname(item.swagger.path)))).toLowerCase() ===
+          basename(dirname(dirname(dirname(targetSwaggerPath)))).toLowerCase()) &&
       item.versionKind === versionKind &&
       item.version <= currentVersion,
   );
