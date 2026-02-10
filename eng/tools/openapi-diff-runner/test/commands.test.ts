@@ -276,6 +276,37 @@ const cases: TestCase[] = [
     },
   },
   {
+    name: "add new stable, two files to one",
+    changedFiles: {
+      additions: ["Bar/stable/2026-01-01/openapi.json"],
+    },
+    expectedCreateDummySwaggers: {
+      old: [],
+      new: [],
+    },
+    expectedOadCalls: {
+      sameVersion: [],
+      crossVersion: [
+        {
+          old: "Bar/preview/2025-04-01-preview/bar.json",
+          new: "Bar/stable/2026-01-01/openapi.json",
+        },
+        {
+          old: "Bar/preview/2025-04-01-preview/baz.json",
+          new: "Bar/stable/2026-01-01/openapi.json",
+        },
+        {
+          old: "Bar/stable/2025-03-01/bar.json",
+          new: "Bar/stable/2026-01-01/openapi.json",
+        },
+        {
+          old: "Bar/stable/2025-03-01/baz.json",
+          new: "Bar/stable/2026-01-01/openapi.json",
+        },
+      ],
+    },
+  },
+  {
     name: "add new stable, change case of service",
     changedFiles: {
       additions: ["FOO/stable/2026-01-01/foo.json"],
@@ -532,6 +563,10 @@ describe("validateBreakingChange", () => {
 
         expect(statusCode).toEqual(0);
 
+        expect(mockCreateDummySwagger).toBeCalledTimes(
+          expectedCreateDummySwaggers.old.length + expectedCreateDummySwaggers.new.length,
+        );
+
         for (const expected of expectedCreateDummySwaggers.old) {
           expect(mockCreateDummySwagger).toBeCalledWith(
             expect.anything(),
@@ -543,9 +578,7 @@ describe("validateBreakingChange", () => {
           expect(mockCreateDummySwagger).toBeCalledWith(expect.anything(), resolve(expected));
         }
 
-        expect(mockCreateDummySwagger).toBeCalledTimes(
-          expectedCreateDummySwaggers.old.length + expectedCreateDummySwaggers.new.length,
-        );
+        expect(mockRunOad).toBeCalledTimes(data.expectedOadCalls.length);
 
         for (const expected of data.expectedOadCalls) {
           expect(mockRunOad).toBeCalledWith(
@@ -553,8 +586,6 @@ describe("validateBreakingChange", () => {
             expected.new,
           );
         }
-
-        expect(mockRunOad).toBeCalledTimes(data.expectedOadCalls.length);
       }
     },
   );
