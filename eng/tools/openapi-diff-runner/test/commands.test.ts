@@ -232,12 +232,7 @@ const cases: TestCase[] = [
     changedFiles: {
       additions: ["Bar/stable/2026-01-01/bar.json"],
     },
-    expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
-    },
     expectedOadCalls: {
-      sameVersion: [],
       crossVersion: [
         {
           old: "Bar/preview/2025-04-01-preview/bar.json",
@@ -255,12 +250,7 @@ const cases: TestCase[] = [
     changedFiles: {
       additions: ["Bar/stable/2026-01-01/openapi.json"],
     },
-    expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
-    },
     expectedOadCalls: {
-      sameVersion: [],
       crossVersion: [
         {
           old: "Bar/preview/2025-04-01-preview/bar.json",
@@ -286,12 +276,7 @@ const cases: TestCase[] = [
     changedFiles: {
       additions: ["FOO/stable/2026-01-01/foo.json"],
     },
-    expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
-    },
     expectedOadCalls: {
-      sameVersion: [],
       crossVersion: [
         {
           old: "Foo/preview/2025-04-01-preview/foo.json",
@@ -309,12 +294,7 @@ const cases: TestCase[] = [
     changedFiles: {
       additions: ["Foo/stable/2026-01-01/openapi.json"],
     },
-    expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
-    },
     expectedOadCalls: {
-      sameVersion: [],
       crossVersion: [
         {
           old: "Foo/preview/2025-04-01-preview/foo.json",
@@ -332,12 +312,7 @@ const cases: TestCase[] = [
     changedFiles: {
       additions: ["FOO/stable/2026-01-01/openapi.json"],
     },
-    expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
-    },
     expectedOadCalls: {
-      sameVersion: [],
       crossVersion: [
         {
           old: "Foo/preview/2025-04-01-preview/foo.json",
@@ -360,10 +335,6 @@ const cases: TestCase[] = [
         },
       ],
     },
-    expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
-    },
     expectedOadCalls: {
       sameVersion: [
         {
@@ -371,7 +342,6 @@ const cases: TestCase[] = [
           new: "Foo/stable/2025-03-01/openapi.json",
         },
       ],
-      crossVersion: [],
     },
   },
   {
@@ -382,10 +352,6 @@ const cases: TestCase[] = [
       additions: ["Foo/stable/2025-03-01/openapi.json"],
       deletions: ["Foo/stable/2025-03-01/foo.json"],
     },
-    expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
-    },
     expectedOadCalls: {
       sameVersion: [
         {
@@ -393,7 +359,6 @@ const cases: TestCase[] = [
           new: "Foo/stable/2025-03-01/openapi.json",
         },
       ],
-      crossVersion: [],
     },
   },
   {
@@ -402,10 +367,6 @@ const cases: TestCase[] = [
       additions: ["FOO/stable/2025-03-01/openapi.json"],
       deletions: ["Foo/stable/2025-03-01/foo.json"],
     },
-    expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
-    },
     expectedOadCalls: {
       sameVersion: [
         {
@@ -413,7 +374,6 @@ const cases: TestCase[] = [
           new: "FOO/stable/2025-03-01/openapi.json",
         },
       ],
-      crossVersion: [],
     },
   },
   {
@@ -428,10 +388,6 @@ const cases: TestCase[] = [
         },
       ],
     },
-    expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
-    },
     expectedOadCalls: {
       sameVersion: [
         {
@@ -443,7 +399,6 @@ const cases: TestCase[] = [
           new: "FOO/stable/2025-03-01/openapi.json",
         },
       ],
-      crossVersion: [],
     },
   },
   {
@@ -456,10 +411,6 @@ const cases: TestCase[] = [
       ],
       renames: [],
     },
-    expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
-    },
     expectedOadCalls: {
       sameVersion: [
         {
@@ -471,7 +422,6 @@ const cases: TestCase[] = [
           new: "specification/bar/data-plane/Bar/stable/2025-03-01/openapi.json",
         },
       ],
-      crossVersion: [],
     },
   },
   {
@@ -480,10 +430,6 @@ const cases: TestCase[] = [
       additions: ["Foo/stable/2025-03-01/openapi1.json", "Foo/stable/2025-03-01/openapi2.json"],
       deletions: ["Foo/stable/2025-03-01/foo.json"],
       renames: [],
-    },
-    expectedCreateDummySwaggers: {
-      old: [],
-      new: [],
     },
     expectedOadCalls: {
       sameVersion: [
