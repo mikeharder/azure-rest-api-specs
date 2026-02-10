@@ -110,6 +110,7 @@ type TestCase = {
   };
 };
 
+// TODO: Use same filename in services Foo and Bar to stress test xver matching logic
 const cases: TestCase[] = [
   {
     name: "modify one file, one version",
