@@ -1,5 +1,5 @@
 import { mapAsync } from "@azure-tools/specs-shared/array";
-import { basename } from "node:path";
+import { basename, dirname } from "node:path";
 import { logError } from "../log.js";
 import { ApiVersionLifecycleStage } from "../types/breaking-change.js";
 import { getVersionFromInputFile } from "./common-utils.js";
@@ -46,21 +46,24 @@ async function getPrecedingSwaggerByType(
     };
   });
 
-  // TODO: Also include swaggers, if the version folder matches (case-insensitive), and the
-  // before and after folders only include a single file
-
   const versionsOfType = swaggersWithVersions.filter(
     (item) =>
-      item.fileName === fileName &&
+      (item.fileName === fileName ||
+        basename(dirname(dirname(dirname(item.swagger.path)))) ===
+          basename(dirname(dirname(dirname(targetSwaggerPath))))) &&
       item.versionKind === versionKind &&
       item.version <= currentVersion,
   );
 
   if (versionsOfType.length > 0) {
-    const mostRecent = versionsOfType.reduce((previous, current) =>
-      previous.version > current.version ? previous : current,
+    const mostRecentVersion = versionsOfType
+      .map((item) => item.version)
+      .sort()
+      .reverse()[0];
+    const swaggersMatchingVersion = versionsOfType.filter(
+      (item) => item.version === mostRecentVersion,
     );
-    return mostRecent.swagger.path;
+    return swaggersMatchingVersion[0].swagger.path;
   }
 
   return undefined;
