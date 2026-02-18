@@ -1,0 +1,9 @@
+import "./Disk/client.tsp"
+import "./Gallery/client.tsp"
+
+using Azure.ClientGenerator.Core;
+@client({
+  name: "Compute",
+  service: [Disk, Gallery],
+})
+namespace Compute;
