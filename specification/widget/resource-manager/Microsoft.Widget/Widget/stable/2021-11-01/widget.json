@@ -86,7 +86,7 @@
         }
       }
     },
-    "/subscriptions/{subscriptionId}/providers/Microsoft.Widget/employees": {
+    "/subscriptions/{subscriptionId}/providers/Microsoft.Widget/Employees": {
       "get": {
         "operationId": "Employees_ListBySubscription",
         "tags": [
