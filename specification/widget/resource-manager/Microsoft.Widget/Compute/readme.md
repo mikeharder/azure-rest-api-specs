@@ -15,17 +15,27 @@ use the native TypeSpec code generation configured in the tspconfig.yaml file.
 ```yaml
 openapi-type: arm
 openapi-subtype: rpaas
-tag: package-2021-11-01
+tag: package-2022-11-01
 ```
 
-### Tag: package-2021-11-01
+### Tag: package-2022-11-01
 
-These settings apply only when `--tag=package-2021-11-01` is specified on the command line.
+These settings apply only when `--tag=package-2022-11-01` is specified on the command line.
 
 ```yaml $(tag) == 'package-2021-11-01'
 input-file:
   - stable/2021-11-01/disk.json
-  - stable/2021-11-01/gallery.json
+  - stable/2022-11-01/gallery.json
+```
+
+### Tag: package-2022-10-01-preview
+
+These settings apply only when `--tag=package-2022-10-01-preview` is specified on the command line.
+
+```yaml $(tag) == 'package-2022-11-01-preview'
+input-file:
+  - preview/2021-10-01-preview/disk.json
+  - preview/2022-10-01-preview/gallery.json
 ```
 
 ---

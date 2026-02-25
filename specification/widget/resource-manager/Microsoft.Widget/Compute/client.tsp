@@ -5,7 +5,7 @@ import "./Gallery/client.tsp";
 using Azure.ClientGenerator.Core;
 
 @client({
-  name: "Compute",
+  name: "ComputeClient",
   service: [Disk, Gallery],
 })
-namespace Compute;
+namespace ComputeClient;
