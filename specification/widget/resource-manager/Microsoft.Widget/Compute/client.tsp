@@ -8,5 +8,4 @@ using Azure.ClientGenerator.Core;
   name: "Compute",
   service: [Disk, Gallery],
 })
-
 namespace Compute;
