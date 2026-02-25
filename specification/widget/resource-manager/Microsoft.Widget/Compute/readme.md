@@ -22,7 +22,7 @@ tag: package-2022-11-01
 
 These settings apply only when `--tag=package-2022-11-01` is specified on the command line.
 
-```yaml $(tag) == 'package-2021-11-01'
+```yaml $(tag) == 'package-2022-11-01'
 input-file:
   - stable/2021-11-01/disk.json
   - stable/2022-11-01/gallery.json
