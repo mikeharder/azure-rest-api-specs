@@ -9,7 +9,7 @@ using Azure.ResourceManager;
 
 /** Disk Resource Provider management API. */
 @armProviderNamespace
-@service(#{ title: "Disk" })
+@service(#{ title: "Compute" })
 @versioned(Disk.Versions)
 namespace Disk;
 

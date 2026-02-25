@@ -9,7 +9,7 @@ using Azure.ResourceManager;
 
 /** Gallery Resource Provider management API. */
 @armProviderNamespace
-@service(#{ title: "Gallery" })
+@service(#{ title: "Compute" })
 @versioned(Gallery.Versions)
 namespace Gallery;
 
