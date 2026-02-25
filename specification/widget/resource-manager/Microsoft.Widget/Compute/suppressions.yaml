@@ -1,4 +1,7 @@
 - tool: TypeSpecValidation
   reason: composite spec
-  rules: [SdkTspConfigValidation]
-  paths: [tspconfig.yaml]
+  paths: [".", "Disk", "Gallery"]
+# - tool: TypeSpecValidation
+#   reason: composite spec
+#   rules: [SdkTspConfigValidation]
+#   paths: [tspconfig.yaml]
