@@ -7,10 +7,11 @@ import "@azure-tools/typespec-azure-resource-manager";
 using TypeSpec.Versioning;
 using Azure.ResourceManager;
 
+#suppress "@azure-tools/typespec-azure-resource-manager/missing-operations-endpoint" ""
 /** Gallery Resource Provider management API. */
-@armProviderNamespace
+@armProviderNamespace("Microsoft.Widget")
 @service(#{ title: "Compute" })
-@versioned(Gallery.Versions)
+@versioned(Versions)
 namespace Gallery;
 
 /** The available API versions. */
@@ -24,4 +25,3 @@ enum Versions {
   v2022_11_01: "2022-11-01",
 }
 
-interface Operations extends Azure.ResourceManager.Operations {}

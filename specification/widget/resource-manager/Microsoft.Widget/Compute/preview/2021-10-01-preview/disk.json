@@ -44,7 +44,7 @@
     }
   ],
   "paths": {
-    "/providers/Disk/operations": {
+    "/providers/Microsoft.Widget/operations": {
       "get": {
         "operationId": "Operations_List",
         "tags": [

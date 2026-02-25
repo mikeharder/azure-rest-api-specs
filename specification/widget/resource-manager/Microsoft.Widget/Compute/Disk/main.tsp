@@ -8,9 +8,9 @@ using TypeSpec.Versioning;
 using Azure.ResourceManager;
 
 /** Disk Resource Provider management API. */
-@armProviderNamespace
+@armProviderNamespace("Microsoft.Widget")
 @service(#{ title: "Compute" })
-@versioned(Disk.Versions)
+@versioned(Versions)
 namespace Disk;
 
 /** The available API versions. */
