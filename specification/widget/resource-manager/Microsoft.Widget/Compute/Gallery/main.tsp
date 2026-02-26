@@ -7,8 +7,8 @@ import "@azure-tools/typespec-azure-resource-manager";
 using TypeSpec.Versioning;
 using Azure.ResourceManager;
 
-#suppress "@azure-tools/typespec-azure-resource-manager/missing-operations-endpoint" ""
 /** Gallery Resource Provider management API. */
+#suppress "@azure-tools/typespec-azure-resource-manager/missing-operations-endpoint" ""
 @armProviderNamespace("Microsoft.Widget")
 @service(#{ title: "Compute" })
 @versioned(Versions)
@@ -24,4 +24,3 @@ enum Versions {
   @armCommonTypesVersion(Azure.ResourceManager.CommonTypes.Versions.v5)
   v2022_11_01: "2022-11-01",
 }
-
