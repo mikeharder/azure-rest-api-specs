@@ -16,9 +16,59 @@ runs:
   using: "composite"
 
   steps:
+    # workaround for "setup-node incorrectly downloads latest on ubuntu-slim"
+    # https://github.com/actions/runner-images/issues/13671
+    - id: check-node
+      run: |
+        CURRENT=$(node --version 2>/dev/null || echo "none")
+        # Strip leading "v" if present
+        CURRENT="${CURRENT#v}"
+        DESIRED="${{ inputs.node-version }}"
+
+        match=false
+
+        if [[ "$CURRENT" == "$DESIRED" ]]; then
+          # Exact match (e.g. "22.14.0" == "22.14.0")
+          match=true
+        elif [[ "$DESIRED" =~ ^([0-9]+)\.x$ ]]; then
+          # Major.x pattern (e.g. "24.x")
+          DESIRED_MAJOR="${BASH_REMATCH[1]}"
+          CURRENT_MAJOR="${CURRENT%%.*}"
+          if [[ "$CURRENT_MAJOR" == "$DESIRED_MAJOR" ]]; then
+            match=true
+          fi
+        elif [[ "$DESIRED" =~ ^([0-9]+)\.([0-9]+)\.x$ ]]; then
+          # Major.minor.x pattern (e.g. "24.1.x")
+          DESIRED_PREFIX="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}."
+          if [[ "$CURRENT" == "$DESIRED_PREFIX"* ]]; then
+            match=true
+          fi
+        elif [[ "$DESIRED" =~ ^([0-9]+)$ ]]; then
+          # Major-only pattern (e.g. "24")
+          CURRENT_MAJOR="${CURRENT%%.*}"
+          if [[ "$CURRENT_MAJOR" == "$DESIRED" ]]; then
+            match=true
+          fi
+        elif [[ "$DESIRED" =~ ^([0-9]+)\.([0-9]+)$ ]]; then
+          # Major.minor pattern (e.g. "24.1")
+          DESIRED_PREFIX="${DESIRED}."
+          if [[ "$CURRENT" == "$DESIRED_PREFIX"* ]]; then
+            match=true
+          fi
+        fi
+
+        if [[ "$match" == "true" ]]; then
+          echo "Current node version v${CURRENT} matches desired '${DESIRED}', skipping download"
+          echo "node-version=" >> "$GITHUB_OUTPUT"
+        else
+          echo "Current node version v${CURRENT} does not match desired '${DESIRED}', will install"
+          echo "node-version=${{ inputs.node-version }}" >> "$GITHUB_OUTPUT"
+        fi
+      shell: bash
+
     - uses: actions/setup-node@v6
       with:
-        node-version: ${{ inputs.node-version }}
+        node-version: ${{ steps.check-node.outputs.node-version }}
         cache: "npm"
         cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
 
