@@ -28,7 +28,6 @@ enum Versions {
   v2022_11_01: "2022-11-01",
 }
 
-
 /** A ContosoProviderHub resource */
 model Employee is TrackedResource<EmployeeProperties> {
   ...ResourceNameParameter<Employee>;
