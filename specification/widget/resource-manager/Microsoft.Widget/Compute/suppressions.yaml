@@ -1,7 +1,19 @@
 - tool: TypeSpecValidation
+  rules: [FolderStructure]
+  paths: ["*"]
   reason: composite spec
-  paths: [".", "Disk", "Gallery"]
-# - tool: TypeSpecValidation
-#   reason: composite spec
-#   rules: [SdkTspConfigValidation]
-#   paths: [tspconfig.yaml]
+
+- tool: TypeSpecValidation
+  rules: [SdkTspConfigValidation]
+  paths: ["tspconfig.yaml"]
+  reason: customize sub-rules for each folder
+
+- tool: TypeSpecValidation
+  rules: [SdkTspConfigValidation]
+  paths: ["Disk/tspconfig.yaml"]
+  reason: customize sub-rules for each folder
+
+- tool: TypeSpecValidation
+  rules: [SdkTspConfigValidation]
+  paths: ["Gallery/tspconfig.yaml"]
+  reason: customize sub-rules for each folder
