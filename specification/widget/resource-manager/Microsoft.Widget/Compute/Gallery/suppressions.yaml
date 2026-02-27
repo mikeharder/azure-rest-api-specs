@@ -1,4 +1,9 @@
 - tool: TypeSpecValidation
   rules: [FolderStructure]
-  reason: composite spec
   paths: ["."]
+  reason: composite spec
+
+- tool: TypeSpecValidation
+  rules: [SdkTspConfigValidation]
+  paths: ["tspconfig.yaml"]
+  reason: composite spec
