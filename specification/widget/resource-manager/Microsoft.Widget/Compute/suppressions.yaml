@@ -1,3 +1,4 @@
 - tool: TypeSpecValidation
+  rules: [SdkTspConfigValidation]
+  paths: ["tspconfig.yaml"]
   reason: composite spec
-  paths: ["."]
