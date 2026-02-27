@@ -1,3 +1,4 @@
 - tool: TypeSpecValidation
+  rules: [FolderStructure]
   reason: composite spec
   paths: ["."]
