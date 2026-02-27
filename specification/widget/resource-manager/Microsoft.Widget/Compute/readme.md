@@ -14,7 +14,6 @@ use the native TypeSpec code generation configured in the tspconfig.yaml file.
 
 ```yaml
 openapi-type: arm
-openapi-subtype: rpaas
 tag: package-2022-11-01
 ```
 
@@ -35,7 +34,7 @@ These settings apply only when `--tag=package-2022-10-01-preview` is specified o
 ```yaml $(tag) == 'package-2022-10-01-preview'
 input-file:
   - preview/2021-10-01-preview/disk.json
-  - preview/2022-10-01-preview/gallery.json
+  - preview/2022-10-02-preview/gallery.json
 ```
 
 ---
