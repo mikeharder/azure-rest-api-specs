@@ -14,6 +14,13 @@ options:
     generate-fakes: true
     head-as-boolean: true
     inject-spans: true
+  "@azure-tools/typespec-ts":
+    service-dir: "sdk/compute"
+    experimental-extensible-enums: true
+    emitter-output-dir: "{output-dir}/{service-dir}/arm-compute"
+    flavor: azure
+    package-details:
+      name: "@azure/arm-compute"
 linter:
   extends:
     - "@azure-tools/typespec-azure-rulesets/resource-manager"
