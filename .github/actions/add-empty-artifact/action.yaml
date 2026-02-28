@@ -13,8 +13,8 @@ runs:
   using: composite
 
   steps:
-    - name: Create empty file to upload artifact
-      run: "> $RUNNER_TEMP/${{ inputs.name }}=${{ inputs.value }}"
+    - name: Create temp file to upload artifact
+      run: "echo > $RUNNER_TEMP/${{ inputs.name }}=${{ inputs.value }}"
       shell: bash
 
     # The maximum length is reported to be 260 characters. A full list of invalid artifact name characters is documented here:
