@@ -17,10 +17,10 @@ options:
   "@azure-tools/typespec-ts":
     service-dir: "sdk/compute"
     experimental-extensible-enums: true
-    emitter-output-dir: "{output-dir}/{service-dir}/arm-compute"
+    emitter-output-dir: "{output-dir}/{service-dir}/arm-computewidget"
     flavor: azure
     package-details:
-      name: "@azure/arm-compute"
+      name: "@azure/arm-computewidget"
 linter:
   extends:
     - "@azure-tools/typespec-azure-rulesets/resource-manager"
