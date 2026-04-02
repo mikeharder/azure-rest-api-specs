@@ -91,6 +91,10 @@ process {
 end {
   npm --prefix $PackageInstallCache ci | Write-Host
 
+  $filesListPath = "/tmp/files.txt"
+  $filesToCheck | Set-Content -Path $filesListPath
+  Write-Host "File list written to $filesListPath"
+
   $command = "npm --prefix $PackageInstallCache exec --no -- cspell $JobType --config $CSpellConfigPath --no-must-find-files --root $SpellCheckRoot --file-list stdin"
   Write-Host $command
   $cspellOutput = $filesToCheck | npm --prefix $PackageInstallCache `

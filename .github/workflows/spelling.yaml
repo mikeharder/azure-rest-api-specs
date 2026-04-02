@@ -42,3 +42,8 @@ jobs:
             exit $LASTEXITCODE
           }
         shell: pwsh
+
+      - name: Print file list
+        if: always()
+        run: cat /tmp/files.txt
+
