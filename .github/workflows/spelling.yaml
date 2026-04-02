@@ -17,6 +17,7 @@ jobs:
   spellcheck:
     name: SpellCheck (${{ matrix.os }}, ${{ matrix.index }})
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-slim, ubuntu-latest]
         index: [1, 2, 3, 4, 5]
