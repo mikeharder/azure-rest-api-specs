@@ -47,3 +47,6 @@ jobs:
         if: always()
         run: cat /tmp/files.txt
 
+      - name: run cspell from bash
+        if: always()
+        run: cat /tmp/files.txt | npm --prefix /tmp/cspell-tool-path exec --no -- cspell lint --config cspell.json --no-must-find-files --root /home/runner/work/azure-rest-api-specs/azure-rest-api-specs/specification --file-list stdin
