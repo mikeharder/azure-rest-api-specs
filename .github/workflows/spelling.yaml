@@ -47,6 +47,10 @@ jobs:
           }
         shell: pwsh
 
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+
       - name: print node versions
         if: always()
         run: node -v && npm -v
