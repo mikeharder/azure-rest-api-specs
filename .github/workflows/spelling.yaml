@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   spellcheck:
-    name: SpellCheck (${{ matrix.os }}, ${{ matrix.index }})
+    name: ${{ matrix.os }} ${{ matrix.node }}
     strategy:
       fail-fast: false
       matrix:
