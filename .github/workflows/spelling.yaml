@@ -15,8 +15,11 @@ permissions:
 
 jobs:
   spellcheck:
-    name: SpellCheck
-    runs-on: ubuntu-slim
+    name: SpellCheck (${{ matrix.os }})
+    strategy:
+      matrix:
+        os: [ubuntu-slim, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
