@@ -47,6 +47,10 @@ jobs:
           }
         shell: pwsh
 
+      - name: print node versions
+        if: always()
+        run: node -v && npm -v
+
       - name: Print file list
         if: always()
         run: cat /tmp/files.txt
