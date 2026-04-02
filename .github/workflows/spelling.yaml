@@ -36,6 +36,7 @@ jobs:
               -SourceCommittish HEAD `
               -TargetCommittish HEAD^ `
               -SpellCheckRoot (Resolve-Path specification) `
+              -LeavePackageInstallCache $true
               -ExitWithError
           if ($LASTEXITCODE) {
             Write-Host "Spelling errors found in changed files. See https://aka.ms/ci-fix#spell-check"
