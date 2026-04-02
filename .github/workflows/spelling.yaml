@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-slim]
-        index: [1]
+        node: [20.x, 22.x, 24.x]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -49,7 +49,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 24.x
+          node-version: ${{ matrix.node }}
 
       - name: print node versions
         if: always()
