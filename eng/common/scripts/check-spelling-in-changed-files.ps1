@@ -115,6 +115,7 @@ $spellingErrors = &"$PSScriptRoot/../spelling/Invoke-Cspell.ps1" `
   -CspellConfigPath $CspellConfigPath `
   -SpellCheckRoot $SpellCheckRoot `
   -FileList $changedFilePaths
+  -LeavePackageInstallCache $true
 $cspellExitCode = $LASTEXITCODE
 
 if ($spellingErrors) {
