@@ -19,8 +19,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-slim, ubuntu-latest]
-        index: [1, 2, 3, 4, 5]
+        os: [ubuntu-slim]
+        index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     runs-on: ${{ matrix.os }}
 
     steps:
