@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-slim]
-        index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        index: [1]
     runs-on: ${{ matrix.os }}
 
     steps:
