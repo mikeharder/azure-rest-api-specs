@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-slim]
+        os: [ubuntu-latest, ubuntu-slim]
         index: [1]
     runs-on: ${{ matrix.os }}
 
