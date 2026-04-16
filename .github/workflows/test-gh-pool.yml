@@ -8,7 +8,7 @@ jobs:
   test-gh-pool:
     strategy:
       matrix:
-        runs-on: [ubuntu-slim, ubuntu-latest, azsdk-pool-github-test, azsdk-pool-github-test-3]
+        runs-on: [ubuntu-slim, ubuntu-latest]
     runs-on: ${{ matrix.runs-on }}
     steps:
       - name: hello
