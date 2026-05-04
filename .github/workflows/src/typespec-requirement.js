@@ -9,9 +9,12 @@ import { CoreLogger } from "./core-logger.js";
 // Enable simple-git debug logging to improve console output
 debug.enable("simple-git");
 
+// TODO: Need to add "brownfield" label if spec already exists in main?
+// would need API call to query main, not just use git client to query HEAD^ (like typespec-requirement.ps1)
+
 /**
  * @param {import('@actions/github-script').AsyncFunctionArguments} AsyncFunctionArguments
- * @returns {Promise<boolean>}
+ * @returns {Promise<void>}
  */
 export default async function typespecRequirement({ core }) {
   const options = {
@@ -32,8 +35,6 @@ export default async function typespecRequirement({ core }) {
   core.debug(`changed swaggers:\n  ${changedSwaggers.join("\n  ")}`);
 
   const git = simpleGit(options.cwd);
-
-  let result = true;
 
   for (const swaggerPath of changedSwaggers) {
     core.debug(swaggerPath);
@@ -60,10 +61,6 @@ export default async function typespecRequirement({ core }) {
       continue;
     }
 
-    core.debug(`  NEW API VERSION MUST USE TYPESPEC`);
-
-    result = false;
+    core.setFailed(`  NEW API VERSION MUST USE TYPESPEC`);
   }
-
-  return result;
 }

@@ -64,7 +64,8 @@ describe("typespecRequirement", () => {
       }),
     );
 
-    return await typespecRequirement({ core });
+    await typespecRequirement({ core });
+    return core;
   }
 
   it.each([
@@ -123,7 +124,11 @@ describe("typespecRequirement", () => {
       expected: true,
     },
   ])("$name", async ({ options, expected }) => {
-    const actual = await runTest(options);
-    expect(actual).toBe(expected);
+    const core = await runTest(options);
+    if (expected) {
+      expect(core.setFailed).not.toHaveBeenCalled();
+    } else {
+      expect(core.setFailed).toHaveBeenCalled();
+    }
   });
 });
