@@ -3,7 +3,7 @@
   "info": {
     "title": "Widget",
     "version": "2024-10-01-preview",
-    "description": "Microsoft.Widget Resource Provider management API.",
+    "description": "Microsoft.Widget Resource Provider management API."
   },
   "schemes": [
     "https"
