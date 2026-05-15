@@ -33,7 +33,7 @@
           "Operations"
         ],
         "operationId": "Operations_List",
-        "description": "Lists all of the available Addons RP operations.",
+        "description": "Lists all of the available Addons RP operations 2.",
         "x-ms-examples": {
           "Operations_List": {
             "$ref": "./examples/Operations_List.json"
