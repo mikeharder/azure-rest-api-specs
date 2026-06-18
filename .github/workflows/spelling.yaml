@@ -15,14 +15,23 @@ permissions:
 
 jobs:
   spellcheck:
-    name: SpellCheck
-    runs-on: ubuntu-24.04
+    name: ${{ matrix.os }} ${{ matrix.node }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-slim]
+        node: [20.x, 22.x, 24.x]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 2
+          sparse-checkout: |
+            .github
+            eng
+            specification/servicefabricmanagedclusters
 
       # workaround streetsidesoftware/cspell#8778
       - name: Setup Node 22
@@ -43,3 +52,26 @@ jobs:
             exit $LASTEXITCODE
           }
         shell: pwsh
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: print node versions
+        if: always()
+        run: node -v && npm -v
+
+      - name: Print file list
+        if: always()
+        run: cat /tmp/files.txt
+
+      - name: run cspell from bash
+        if: always()
+        run: cat /tmp/files.txt | npm --prefix /tmp/cspell-tool-path exec --no -- cspell lint --config cspell.json --no-must-find-files --root /home/runner/work/azure-rest-api-specs/azure-rest-api-specs/specification --file-list stdin
+
+      - name: Upload files.txt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: files-${{ matrix.os }}-${{ matrix.node }}
+          path: /tmp/files.txt

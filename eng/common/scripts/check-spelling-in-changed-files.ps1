@@ -114,7 +114,8 @@ foreach ($file in $changedFiles) {
 $spellingErrors = &"$PSScriptRoot/../spelling/Invoke-Cspell.ps1" `
   -CspellConfigPath $CspellConfigPath `
   -SpellCheckRoot $SpellCheckRoot `
-  -FileList $changedFilePaths
+  -FileList $changedFilePaths `
+  -LeavePackageInstallCache $true
 $cspellExitCode = $LASTEXITCODE
 
 if ($spellingErrors) {
