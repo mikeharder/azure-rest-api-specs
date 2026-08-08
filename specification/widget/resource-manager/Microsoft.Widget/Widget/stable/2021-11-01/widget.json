@@ -471,8 +471,7 @@
       "description": "Employee properties",
       "properties": {
         "age": {
-          "type": "integer",
-          "format": "int32",
+          "type": "string",
           "description": "Age of employee"
         },
         "city": {
