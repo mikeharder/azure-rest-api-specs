@@ -17,6 +17,9 @@ global-approvers:
   - samvaity
   - praveenkuttappan
 
+BreakingChange-Approved-Benign:
+  - lmazuel
+
 # Package name approval labels (plane-aware)
 package-name-dotnet-approved:
   management-plane:
