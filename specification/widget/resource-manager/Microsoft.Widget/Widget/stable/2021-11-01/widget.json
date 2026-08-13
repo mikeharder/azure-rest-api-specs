@@ -363,14 +363,6 @@
           },
           {
             "$ref": "../../../../../../common-types/resource-management/v5/types.json#/parameters/ResourceGroupNameParameter"
-          },
-          {
-            "name": "employeeName",
-            "in": "path",
-            "description": "The name of the Employee",
-            "required": true,
-            "type": "string",
-            "pattern": "^[a-zA-Z0-9-]{3,24}$"
           }
         ],
         "responses": {
