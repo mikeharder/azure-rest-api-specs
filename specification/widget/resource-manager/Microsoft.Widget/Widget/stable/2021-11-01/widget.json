@@ -1,6 +1,6 @@
 {
   "swagger": "2.0",
-  "info": { 
+  "info": {
     "title": "Widget",
     "version": "2021-11-01",
     "description": "Microsoft.Widget Resource Provider management API.",
